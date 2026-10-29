@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot the Spy V1.9.0</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 10%, #0d1527 0%, #080a14 60%, #030408 100%);
+            color: #f3f4f6;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            overflow-x: hidden;
+        }
+        input {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        
+        /* Custom Scrollbar Neon */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2563eb;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* Ambient Cyberpunk Glows */
+        .cyber-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 27, 75, 0.7) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(59, 130, 246, 0.1);
+        }
+        .cyber-card:hover {
+            border-color: rgba(6, 182, 212, 0.6);
+            box-shadow: 0 12px 36px 0 rgba(6, 182, 212, 0.25);
+        }
+
+        /* Holographic Glow Effects for Detective Magnifier Icon */
+        @keyframes hologramPulse {
+            0%, 100% {
+                box-shadow: 0 0 12px rgba(6, 182, 212, 0.7), 0 0 24px rgba(59, 130, 246, 0.5), 0 0 35px rgba(168, 85, 247, 0.3);
+                border-color: rgba(6, 182, 212, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 22px rgba(6, 182, 212, 0.95), 0 0 35px rgba(249, 115, 22, 0.6), 0 0 45px rgba(168, 85, 247, 0.6);
+                border-color: rgba(249, 115, 22, 0.9);
+            }
+        }
+
+        @keyframes hologramScanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .hologram-icon-wrapper {
+            position: relative;
+            display: inline-block;
+            border-radius: 14px;
+            padding: 2px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6, #a855f7, #f97316);
+            animation: hologramPulse 3.5s infinite ease-in-out;
+            overflow: hidden;
+        }
+
+        .hologram-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(6, 182, 212, 0.3) 50%, transparent 100%);
+            animation: hologramScanline 2.5s infinite linear;
+            pointer-events: none;
+        }
+
+        /* Vote Card 3D Depth */
+        .vote-card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+        .vote-card-3d:hover {
+            transform: translateY(-6px) scale(1.03) rotateX(5deg);
+            box-shadow: 0 20px 35px -10px rgba(6, 182, 212, 0.4), 0 0 25px rgba(168, 85, 247, 0.3);
+        }
+        .vote-card-3d:active {
+            transform: translateY(2px) scale(0.96);
+        }
+
+        /* Soundwave animation */
+        @keyframes soundwave {
+            0%, 100% { height: 6px; }
+            50% { height: 28px; }
+        }
+        .bar-wave {
+            animation: soundwave 1.2s infinite ease-in-out;
+        }
+        .bar-wave:nth-child(1) { animation-delay: 0.1s; }
+        .bar-wave:nth-child(2) { animation-delay: 0.3s; }
+        .bar-wave:nth-child(3) { animation-delay: 0.2s; }
+        .bar-wave:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Steam rise animation */
+        @keyframes steamRise {
+            0% { transform: translateY(0) scaleX(1); opacity: 0.8; }
+            50% { transform: translateY(-12px) scaleX(1.3); opacity: 0.3; }
+            100% { transform: translateY(-24px) scaleX(1.6); opacity: 0; }
+        }
+        .steam-effect {
+            animation: steamRise 2s infinite linear;
+        }
+
+        /* Button Feedback Effect */
+        button, [role="button"], #flip-card-inner {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        button:hover, [role="button"]:hover {
+            transform: translateY(-2px);
+        }
+        button:active, [role="button"]:active {
+            transform: translateY(1px) scale(0.95) !important;
+            filter: brightness(0.9);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-cyan-500 selection:text-black">
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, duration, type = 'sine', gainVal = 0.1, startTime = audioCtx.currentTime) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, startTime);
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(1800, startTime);
+                
+                osc.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                gainNode.gain.setValueAtTime(gainVal, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    playTone(580, 0.05, 'sine', 0.18, now);
+                    playTone(180, 0.03, 'triangle', 0.12, now);
+                } else if (type === 'success') {
+                    playTone(523.25, 0.15, 'sine', 0.1, now);
+                    playTone(659.25, 0.25, 'sine', 0.1, now + 0.08);
+                } else if (type === 'fail') {
+                    playTone(330, 0.12, 'sine', 0.12, now);
+                    playTone(220, 0.22, 'triangle', 0.1, now + 0.06);
+                } else if (type === 'card') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    const filter = audioCtx.createBiquadFilter();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(250, now);
+                    osc.frequency.exponentialRampToValueAtTime(1000, now + 0.15);
+                    
+                    filter.type = 'peaking';
+                    filter.Q.setValueAtTime(12, now);
+                    filter.frequency.setValueAtTime(900, now);
+                    filter.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+                    
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {
+                console.log("Audio API not supported.");
+            }
+        }
+
+        function playVictoryMelody(winner) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+
+                if (winner === 'civilian') {
+                    const tempo = 0.10;
+                    const notes = [261.63, 329.63, 392.00, 493.88, 523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, index) => {
+                        const duration = 0.5 - (index * 0.03);
+                        playTone(freq, duration, 'sine', 0.08, now + (index * tempo));
+                        if (index % 2 === 0) {
+                            playTone(freq * 0.5, duration, 'triangle', 0.04, now + (index * tempo));
+                        }
+                    });
+                } else if (winner === 'spy') {
+                    const tempo = 0.15;
+                    const notes = [466.16, 440.00, 369.99, 311.13, 293.66, 233.08, 196.00, 146.83];
+                    notes.forEach((freq, index) => {
+                        const duration = 0.6;
+                        playTone(freq, duration, 'triangle', 0.09, now + (index * tempo));
+                        if (index === notes.length - 1) {
+                            playTone(freq * 1.5, 1.4, 'sine', 0.05, now + (index * tempo));
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn("Melody failed to play", e);
+            }
+        }
+    </script>
+
+    <!-- Header Navbar dengan Ikon Detektif Kaca Pembesar Baru -->
+    <header class="border-b border-blue-900/40 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40 px-4 py-3 shadow-lg shadow-cyan-500/5">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Ikon Kustom Detektif Kaca Pembesar SVG Baru dengan Efek Hologram -->
+                <div class="hologram-icon-wrapper flex-shrink-0">
+                    <svg class="w-10 h-10 bg-slate-950 rounded-xl p-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1e1b4b" />
+                                <stop offset="100%" stop-color="#020617" />
+                            </linearGradient>
+                            <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8" />
+                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.3" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Shadow Silhouette Person -->
+                        <path d="M25 85 C25 65, 35 55, 50 55 C65 55, 75 65, 75 85 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+                        <circle cx="50" cy="40" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+                        <!-- Detective Hat -->
+                        <path d="M30 38 Q50 20 70 38 Z" fill="url(#hatGrad)" stroke="#06b6d4" stroke-width="1.5"/>
+                        <rect x="24" y="36" width="52" height="4" rx="2" fill="#06b6d4"/>
+                        <rect x="36" y="33" width="28" height="3" fill="#f97316"/>
+                        <!-- Magnifying Glass Search -->
+                        <circle cx="62" cy="48" r="12" fill="url(#lensGrad)" stroke="#38bdf8" stroke-width="2.5"/>
+                        <line x1="71" y1="57" x2="84" y2="70" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M56 42 Q62 38 66 44" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+                        <!-- Sparkles -->
+                        <circle cx="34" cy="52" r="1.5" fill="#a855f7"/>
+                        <circle cx="42" cy="62" r="1" fill="#06b6d4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">SPOT THE SPY</h1>
+                    <p class="text-[11px] text-cyan-300/70 font-medium" id="header-subtitle">Temukan mata-mata &bull; <span class="text-orange-400 font-semibold">Dev by nderw</span></p>
+                </div>
+            </div>
+
+            <!-- Tombol Menu Pojok Atas -->
+            <button onclick="toggleTopNavMenu()" class="w-10 h-10 rounded-xl bg-slate-900/90 border border-cyan-500/30 text-cyan-400 hover:text-white hover:border-cyan-400 flex items-center justify-center transition-all shadow-md shadow-cyan-500/10">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 md:py-8 flex flex-col justify-center">
+        
+        <!-- ================= PANEL MENU UTAMA ================= -->
+        <div id="panel-menu" class="space-y-6 max-w-xl mx-auto w-full py-2">
+            <div class="space-y-3 text-center">
+                <div class="flex justify-center gap-2 items-center flex-wrap">
+                    <span class="px-3 py-1 text-xs font-semibold bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30 shadow-sm" id="badge-game-tag">Game Kumpul Seru</span>
+                    <span class="px-3 py-1 text-xs font-bold bg-purple-500/10 text-purple-300 rounded-full border border-purple-500/30">V1.9.0</span>
+                    <span class="px-3 py-1 text-[11px] font-medium bg-slate-900/80 text-orange-400 rounded-full border border-orange-500/20">Dev by nderw</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white" id="main-hero-title">Temukan sang <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-rose-400 to-purple-400">Penyusup</span>!</h2>
+                <p class="text-gray-300 text-xs md:text-sm leading-relaxed" id="main-hero-desc">Satu HP diputar bergantian. Warga Sipil mendapatkan kata rahasia yang sama + petunjuk (clue) langsung. Sang Mata-mata tidak mendapatkan kata rahasia sama sekali (Hanya tanda tanya "???")!</p>
+            </div>
+
+            <div class="cyber-card p-6 rounded-2xl space-y-6 shadow-2xl backdrop-blur-xl">
+                <div class="flex items-center justify-between border-b border-blue-900/40 pb-4">
+                    <h3 class="font-bold text-white text-base" id="label-config-title">Konfigurasi Permainan</h3>
+                    <i class="fa-solid fa-sliders text-cyan-400"></i>
+                </div>
+
+                <!-- Kategori Pilihan -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider" id="label-category-select">Kategori Kata (25 Kata Menantang per Kategori)</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="category-selector-grid">
+                        <!-- Dimuat Dinamis via JS -->
+                    </div>
+                </div>
+
+                <!-- BARU: BAGIAN PERAN DI HALAMAN PERTAMA (Tepat Di Bawah Kategori) -->
+                <div class="space-y-2.5 border-t border-b border-blue-900/40 py-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 uppercase tracking-widest">
+                            <i class="fa-solid fa-users-gear mr-1.5 text-cyan-400"></i> PERAN
+                        </label>
+                        <span class="text-[10px] text-gray-400 font-semibold">*Ketuk kartu peran untuk melihat panduan</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <!-- 1. WARGA SIPIL -->
+                        <div onclick="openRoleInfoModal('CIVILIAN')" class="p-3 bg-gradient-to-br from-slate-900 to-teal-950/80 border border-teal-500/40 hover:border-teal-400 rounded-xl cursor-pointer transition-all flex items-center space-x-2.5 group shadow-md hover:shadow-teal-500/20">
+                            <div class="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-300 border border-teal-500/30 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-user-shield text-sm"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="text-xs font-black text-white group-hover:text-teal-300 tracking-wide">WARGA SIPIL</h4>
+                                <span class="text-[9px] text-teal-400/80 font-bold block">Mayoritas & Clue</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. SPY -->
+                        <div onclick="openRoleInfoModal('SPY')" class="p-3 bg-gradient-to-br from-slate-900 to-rose-950/80 border border-rose-500/40 hover:border-rose-400 rounded-xl cursor-pointer transition-all flex items-center space-x-2.5 group shadow-md hover:shadow-rose-500/20">
+                            <div class="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-400 border border-rose-500/30 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-user-ninja text-sm"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="text-xs font-black text-white group-hover:text-rose-400 tracking-wide">SPY</h4>
+                                <span class="text-[9px] text-rose-400/80 font-bold block">Penyusup Rahasia</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. WARGA SPECIAL -->
+                        <div onclick="openRoleInfoModal('SPECIAL')" class="p-3 bg-gradient-to-br from-slate-900 to-amber-950/80 border border-amber-500/40 hover:border-amber-400 rounded-xl cursor-pointer transition-all flex items-center space-x-2.5 group shadow-md hover:shadow-amber-500/20">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-300 border border-amber-500/30 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-star text-sm"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="text-xs font-black text-white group-hover:text-amber-300 tracking-wide">WARGA SPECIAL</h4>
+                                <span class="text-[9px] text-amber-400/80 font-bold block">5 Tokoh Sinematik</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. SPY GLITCH -->
+                        <div onclick="openRoleInfoModal('GLITCH')" class="p-3 bg-gradient-to-br from-slate-900 to-purple-950/80 border border-purple-500/40 hover:border-purple-400 rounded-xl cursor-pointer transition-all flex items-center space-x-2.5 group shadow-md hover:shadow-purple-500/20">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-300 border border-purple-500/30 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-bug text-sm"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="text-xs font-black text-white group-hover:text-purple-300 tracking-wide">SPY GLITCH</h4>
+                                <span class="text-[9px] text-purple-400/80 font-bold block">Sinyal Diretas (25%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pemilih Jumlah Pemain -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider" id="label-player-count">Jumlah Pemain (3 - 12)</label>
+                    <div class="flex items-center justify-between bg-slate-950/80 p-1.5 rounded-xl border border-blue-900/50">
+                        <button onclick="adjustPlayers(-1)" class="w-10 h-10 rounded-lg bg-slate-900 hover:bg-slate-800 flex items-center justify-center text-white font-bold text-lg transition-colors border border-blue-800/40">-</button>
+                        <span id="player-count-display" class="text-base font-extrabold text-cyan-300">4 Pemain</span>
+                        <button onclick="adjustPlayers(1)" class="w-10 h-10 rounded-lg bg-slate-900 hover:bg-slate-800 flex items-center justify-center text-white font-bold text-lg transition-colors border border-blue-800/40">+</button>
+                    </div>
+                </div>
+
+                <!-- Info Komposisi Peran -->
+                <div class="grid grid-cols-2 gap-3 p-3 bg-slate-950/80 rounded-xl border border-blue-900/50 text-center">
+                    <div>
+                        <span class="text-[10px] text-gray-400 block uppercase font-bold" id="label-civ-count">Warga Sipil</span>
+                        <span id="role-civilian-count" class="font-extrabold text-teal-300 text-sm">3 Pemain</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-gray-400 block uppercase font-bold" id="label-spy-count">Mata-mata</span>
+                        <span id="role-spy-count" class="font-extrabold text-rose-400 text-sm">1 Pemain</span>
+                    </div>
+                </div>
+
+                <!-- Input Nama Dinamis -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider" id="label-player-names">Isi Nama Pemain</label>
+                    <div id="player-names-container" class="max-h-48 overflow-y-auto pr-1 space-y-2">
+                        <!-- Dimuat via JS -->
+                    </div>
+                </div>
+
+                <button onclick="setupAndStartDistribution()" class="w-full py-4 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-black rounded-xl tracking-wider uppercase transition-all shadow-lg shadow-cyan-500/20 border border-cyan-400/30" id="btn-start-distribute">
+                    Bagi Kartu Peran <i class="fa-solid fa-fingerprint ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PANEL DISTRIBUSI KARTU (PASS & PLAY - TAP CARD TO OPEN) ================= -->
+        <div id="panel-card-distribution" class="hidden max-w-md mx-auto w-full text-center space-y-6">
+            <div class="space-y-1">
+                <span class="text-xs font-bold text-cyan-300 uppercase tracking-widest" id="label-secret-id">Identitas Rahasia</span>
+                <h3 id="distribute-title" class="text-2xl font-black text-white">Distribusi Peran</h3>
+                <p id="distribute-desc" class="text-xs text-gray-300">Silakan serahkan HP ke pemain yang namanya tertera di bawah.</p>
+            </div>
+
+            <!-- Kartu Interaktif Flip 3D (Ketuk Kartu Langsung Untuk Membuka) -->
+            <div class="perspective-1000 w-full aspect-[3/4] max-w-[290px] mx-auto cursor-pointer" onclick="handleCardClickToOpen()">
+                <div id="flip-card-inner" class="preserve-3d relative w-full h-full duration-500 ease-out rounded-2xl shadow-2xl transition-transform border border-blue-800/50">
+                    
+                    <!-- Sisi Depan (Tertutup - Selalu Standard Visual Cyberpunk) -->
+                    <div id="card-front-face" class="backface-hidden absolute inset-0 w-full h-full bg-gradient-to-b from-slate-900 via-blue-950 to-slate-950 flex flex-col justify-between p-6 rounded-2xl border-2 border-cyan-500/30">
+                        <div class="text-left">
+                            <span id="front-card-tag" class="text-[9px] font-bold text-cyan-400/40 tracking-widest">SPOT THE SPY CLASSIFIED</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                            <div id="front-card-icon-container" class="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30 animate-pulse shadow-lg shadow-cyan-500/20">
+                                <i id="front-card-icon" class="fa-solid fa-lock text-3xl text-cyan-300"></i>
+                            </div>
+                            <h4 id="card-owner-name" class="text-xl font-extrabold text-white">Nama Pemain</h4>
+                            <p class="text-xs text-cyan-300 font-bold bg-cyan-500/10 py-1.5 px-3 rounded-lg border border-cyan-500/30 animate-pulse" id="card-tap-instruction">
+                                <i class="fa-solid fa-hand-pointer mr-1"></i> Ketuk kartu untuk membuka
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] text-gray-500" id="card-keep-secret">TETAP RAHASIA</span>
+                        </div>
+                    </div>
+
+                    <!-- Sisi Belakang (Terbuka - Visual Khusus) -->
+                    <div id="card-back-face" class="backface-hidden rotate-y-180 absolute inset-0 w-full h-full bg-slate-950 flex flex-col justify-between p-5 md:p-6 rounded-2xl border-2 border-purple-500/40 shadow-2xl">
+                        <div class="text-left">
+                            <span id="back-card-tag" class="text-[9px] font-bold text-orange-400/50 tracking-widest">INFORMASI DEKSTRUKTIF</span>
+                        </div>
+                        <div id="card-inner-info" class="flex flex-col items-center justify-center space-y-3.5 text-center my-auto">
+                            <!-- Diisi dinamis via JS -->
+                        </div>
+                        <div class="text-center pt-2">
+                            <p class="text-[10px] text-cyan-300/80 font-semibold" id="card-remember-quote">"Ingat kata Anda, lalu tekan Lanjut"</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Tombol Aksi Distribusi (Hanya Tombol Lanjut) -->
+            <div class="max-w-[290px] mx-auto space-y-2">
+                <button id="btn-next-distribute" onclick="nextCardDistribution()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2 hidden border border-cyan-400/30">
+                    <span id="btn-next-distribute-text">Lanjut Ke Pemain Berikutnya</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PANEL KOCOK DADU GILIRAN ================= -->
+        <div id="panel-dice-roll" class="hidden max-w-md mx-auto w-full text-center space-y-6">
+            <div class="space-y-1">
+                <span class="text-xs font-bold text-cyan-300 uppercase tracking-widest" id="label-dice-turn">Urutan Bermain</span>
+                <h3 class="text-2xl font-black text-white" id="title-dice-roll">Kocok Dadu Penentu</h3>
+                <p id="dice-instruction-text" class="text-xs text-gray-300">Kocok dadu digital di bawah untuk menentukan siapa yang akan mendapat giliran berbicara pertama.</p>
+            </div>
+
+            <!-- Visualizer Dadu -->
+            <div class="py-4 flex justify-center items-center">
+                <div id="dice-visual" class="w-24 h-24 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center text-white text-5xl font-black transition-transform duration-100 border-2 border-cyan-300">
+                    🎲
+                </div>
+            </div>
+
+            <!-- Hasil Kocokan Dadu -->
+            <div id="dice-result-container" class="hidden p-4 bg-slate-950/90 rounded-xl border border-blue-800/50 space-y-4">
+                <div class="space-y-1">
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest block font-bold" id="label-chosen-starter">PEMAIN TERPILIH PERTAMA</span>
+                    <h4 id="dice-chosen-player-name" class="text-xl font-extrabold text-cyan-300">---</h4>
+                </div>
+
+                <div class="border-t border-blue-900/40 pt-3 space-y-3">
+                    <span class="text-xs font-bold text-gray-300 block" id="label-select-direction">Tentukan Arah Putaran Selanjutnya:</span>
+                    <div class="grid grid-cols-2 gap-2 max-w-xs mx-auto">
+                        <button type="button" id="btn-select-dir-right" onclick="setManualTurnDirection('right')" class="py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white">
+                            <i class="fa-solid fa-arrow-rotate-right mr-1 text-cyan-400"></i> <span id="btn-dir-right-text">Melingkar Kanan</span>
+                        </button>
+                        <button type="button" id="btn-select-dir-left" onclick="setManualTurnDirection('left')" class="py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white">
+                            <i class="fa-solid fa-arrow-rotate-left mr-1 text-cyan-400"></i> <span id="btn-dir-left-text">Melingkar Kiri</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-roll-dice" onclick="rollTurnDice()" class="w-full max-w-[280px] mx-auto py-3 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-black rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20 border border-cyan-400/30">
+                <span id="btn-roll-dice-text">Kocok Dadu</span> <i class="fa-solid fa-dice ml-1"></i>
+            </button>
+
+            <button id="btn-dice-continue" onclick="continueToGameplay()" class="hidden w-full max-w-[280px] mx-auto py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-extrabold rounded-xl text-sm transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20">
+                <span id="btn-dice-continue-text">Mulai Sesi Diskusi</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- ================= PANEL UTAMA PERMAINAN (GAMEPLAY LOOP CINEMATIC) ================= -->
+        <div id="panel-gameplay" class="hidden space-y-6">
+            
+            <!-- Info Status Game -->
+            <div class="cyber-card p-4 md:p-5 rounded-2xl border border-blue-800/50 space-y-3 backdrop-blur-xl relative overflow-hidden">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 relative z-10">
+                    <div class="flex items-center space-x-3">
+                        <span id="gameplay-rarity-badge" class="px-3 py-1 bg-cyan-500/10 text-cyan-300 rounded-xl text-xs font-bold border border-cyan-500/30">Sistem Stage</span>
+                        <div>
+                            <h4 class="text-sm font-black text-gray-200 tracking-wide" id="current-stage-title">Putaran: Stage 1 / 3</h4>
+                            <p id="gameplay-direction-subtitle" class="text-xs text-gray-300">Putaran berjalan...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 justify-between md:justify-end">
+                        <div class="text-right">
+                            <span class="text-[10px] text-gray-400 block uppercase font-bold" id="label-active-players">Sisa Pemain</span>
+                            <span id="active-players-count" class="font-black text-white text-sm tracking-wider">4 / 4 Pemain</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="revealSecretWordsModal()" class="px-3 py-2 bg-slate-900/90 hover:bg-slate-800 border border-blue-800/60 rounded-xl text-xs text-cyan-300 hover:text-white flex items-center gap-1.5 transition-colors font-semibold">
+                                <i class="fa-solid fa-eye"></i> <span id="btn-my-word-text">Kata Saya</span>
+                            </button>
+                            <button onclick="confirmExitToMenu()" class="px-3 py-2 bg-slate-900/90 hover:bg-slate-800 border border-blue-800/60 rounded-xl text-xs text-gray-400 hover:text-orange-400 flex items-center gap-1.5 transition-colors font-semibold">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> <span id="btn-menu-exit-text">Menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage Stepper Visualizer -->
+            <div class="max-w-md mx-auto bg-slate-950/80 p-4 rounded-2xl border border-blue-900/50 backdrop-blur-md">
+                <div class="flex justify-between items-center relative">
+                    <div class="absolute h-0.5 bg-slate-800 left-4 right-4 top-1/2 -translate-y-1/2 z-0"></div>
+                    <div id="step-line-fill" class="absolute h-0.5 bg-gradient-to-r from-cyan-400 to-purple-500 left-4 w-0 top-1/2 -translate-y-1/2 z-0 transition-all duration-500"></div>
+
+                    <!-- Step 1 -->
+                    <div class="z-10 flex flex-col items-center">
+                        <div id="step-1-circle" class="w-8 h-8 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-black text-xs border border-cyan-300 shadow-md transition-all">1</div>
+                        <span class="text-[9px] text-cyan-300 font-bold mt-1 uppercase tracking-wider">Stage 1</span>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="z-10 flex flex-col items-center">
+                        <div id="step-2-circle" class="w-8 h-8 rounded-full bg-slate-900 text-gray-500 flex items-center justify-center font-bold text-xs border border-blue-900 transition-all">2</div>
+                        <span class="text-[9px] text-gray-500 font-bold mt-1 uppercase tracking-wider">Stage 2</span>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="z-10 flex flex-col items-center">
+                        <div id="step-3-circle" class="w-8 h-8 rounded-full bg-slate-900 text-gray-500 flex items-center justify-center font-bold text-xs border border-blue-900 transition-all">3</div>
+                        <span class="text-[9px] text-gray-500 font-bold mt-1 uppercase tracking-wider">Stage 3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interaksi Pemberian Petunjuk -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+                <!-- Giliran Berbicara -->
+                <div class="md:col-span-3 cyber-card p-6 rounded-2xl flex flex-col justify-between space-y-6 shadow-xl backdrop-blur-md relative overflow-hidden">
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex items-center space-x-2 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+                            <i class="fa-solid fa-microphone-lines animate-pulse text-orange-400"></i>
+                            <span id="label-speaking-turn">Giliran Berbicara</span>
+                        </div>
+                        
+                        <div class="p-6 bg-slate-950/90 rounded-2xl border border-blue-900/50 text-center space-y-3 shadow-inner">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest block font-bold" id="label-give-clue-instruction">Silakan Berikan 1 Petunjuk Kata</span>
+                            <h3 id="current-speaking-player-name" class="text-3xl md:text-4xl font-black text-white tracking-tight">Pemain 1</h3>
+                            <p class="text-[11px] text-gray-300 leading-relaxed px-2" id="desc-clue-instruction">Sebutkan 1 kata yang mendeskripsikan kata rahasia Anda tanpa langsung menyebutkan kata aslinya!</p>
+                        </div>
+                    </div>
+
+                    <button onclick="advanceSpeakingTurn()" class="w-full py-4 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-black rounded-xl tracking-wider uppercase transition-all shadow-lg shadow-cyan-500/20 relative z-10 border border-cyan-400/30" id="btn-done-clue">
+                        Selesai Beri Petunjuk <i class="fa-solid fa-check ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Tracker Pemain Selesai Bicara -->
+                <div class="md:col-span-2 cyber-card p-5 rounded-2xl space-y-3.5 flex flex-col justify-between backdrop-blur-md">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center border-b border-blue-900/40 pb-2">
+                            <h4 id="tracker-direction-header" class="text-xs font-bold text-cyan-300 uppercase tracking-wider">Urutan Meja</h4>
+                            <span class="text-[10px] bg-slate-950 border border-blue-900 px-2.5 py-1 rounded-md text-gray-300 font-bold" id="stage-round-count">0/4 Terpenuhi</span>
+                        </div>
+                        <div id="stage-players-list-tracker" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            <!-- Dimuat dinamis via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tombol Lanjut ke Voting Baru Dibuka Setelah Stage 3 Selesai -->
+                    <button id="btn-force-voting-trigger" onclick="triggerMultiVotingPhase()" class="w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-gray-400 hover:text-cyan-300 border border-blue-900/50 rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                        Selesaikan 3 Stage Untuk Vote <i class="fa-solid fa-lock ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= PANEL SIDANG VOTING ELIMINASI (REALISTIS & 3D CYBERPUNK) ================= -->
+        <div id="panel-voting" class="hidden space-y-6">
+            <div class="text-center max-w-md mx-auto space-y-1">
+                <span id="voter-turn-badge" class="text-xs text-cyan-300 font-bold uppercase tracking-widest">GILIRAN MEMILIH: 1 / 4</span>
+                <h3 id="voting-prompt-title" class="text-xl font-black text-white">Giliran Pemain Memilih</h3>
+                <p id="voting-prompt-desc" class="text-xs text-gray-300">Pilih secara rahasia siapa yang Anda curigai sebagai Mata-mata (Pilihan langsung terekam).</p>
+            </div>
+
+            <!-- Grid Pemain 3D Cyberpunk Sinematik -->
+            <div id="voting-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 perspective-1000">
+                <!-- Dimuat via JS -->
+            </div>
+
+            <div class="text-center">
+                <button onclick="cancelVotingAndReturn()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-blue-900/50 text-xs text-gray-300 hover:text-white rounded-xl transition-colors" id="btn-back-to-discuss">
+                    Kembali Ke Diskusi
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PANEL AKHIR GAME (GAMEOVER) ================= -->
+        <div id="panel-gameover" class="hidden max-w-xl mx-auto w-full cyber-card p-6 md:p-8 rounded-2xl text-center space-y-6 backdrop-blur-md shadow-2xl">
+            <div id="gameover-art-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center">
+                <!-- Dimuat dinamis via JS -->
+            </div>
+
+            <div class="space-y-1">
+                <h2 id="gameover-title" class="text-3xl font-black tracking-tight text-white">---</h2>
+                <p id="gameover-subtitle" class="text-xs text-gray-300">---</p>
+            </div>
+
+            <!-- Info Kata Sebenarnya -->
+            <div class="grid grid-cols-1 gap-3 max-w-xs mx-auto">
+                <div class="p-3.5 bg-slate-950/90 rounded-xl border border-blue-900/60 text-center">
+                    <span class="text-[10px] text-teal-300 font-bold block uppercase tracking-wider" id="label-civilian-secret-word">Kata Rahasia Warga Sipil</span>
+                    <span id="gameover-word-civilian" class="font-extrabold text-white text-lg tracking-wide">---</span>
+                </div>
+            </div>
+
+            <!-- Daftar Peran & Nasib Pemain -->
+            <div class="space-y-2.5 text-left bg-slate-950/90 p-4 rounded-xl border border-blue-900/60 max-h-52 overflow-y-auto">
+                <h4 class="text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2" id="label-final-status">Peran & Status Akhir</h4>
+                <div id="gameover-players-list" class="space-y-2">
+                    <!-- Dimuat via JS -->
+                </div>
+            </div>
+
+            <!-- Navigasi Akhir -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="restartSameSettings()" class="flex-1 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20" id="btn-play-again">
+                    Main Lagi (Aturan Sama)
+                </button>
+                <button onclick="backToMenu()" class="flex-1 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-colors border border-blue-800/50" id="btn-back-main-menu">
+                    Kembali Ke Menu Utama
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= MODAL TOP OVERLAY MENU (POJOK ATAS) ================= -->
+    <div id="modal-top-nav-menu" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-blue-800/60 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            
+            <div class="p-4 bg-slate-950 border-b border-blue-900/50 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-cyan-400"></i>
+                    <h3 class="font-extrabold text-white text-base" id="menu-overlay-title">Menu Game</h3>
+                </div>
+                <button onclick="toggleTopNavMenu()" class="text-gray-400 hover:text-white p-2 rounded-lg bg-slate-900 border border-blue-800/40">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tabs Navigasi Menu -->
+            <div class="grid grid-cols-3 bg-slate-950 border-b border-blue-900/50 text-xs font-bold text-gray-400">
+                <button id="tab-btn-settings" onclick="switchMenuTab('settings')" class="py-3 text-cyan-300 border-b-2 border-cyan-400 bg-slate-900/50">
+                    <i class="fa-solid fa-gear mr-1"></i> <span id="tab-label-settings">Pengaturan</span>
+                </button>
+                <button id="tab-btn-summary" onclick="switchMenuTab('summary')" class="py-3 hover:text-white border-b-2 border-transparent">
+                    <i class="fa-solid fa-newspaper mr-1"></i> <span id="tab-label-summary">Ringkasan</span>
+                </button>
+                <button id="tab-btn-rules" onclick="switchMenuTab('rules')" class="py-3 hover:text-white border-b-2 border-transparent">
+                    <i class="fa-solid fa-circle-question mr-1"></i> <span id="tab-label-rules">Cara Main</span>
+                </button>
+            </div>
+
+            <div class="p-5 overflow-y-auto space-y-4 text-xs text-gray-300 flex-grow">
+                <!-- 1. TAB PENGATURAN -->
+                <div id="menu-tab-settings" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider" id="label-lang-select">Pilih Bahasa / Language</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="lang-btn-id" onclick="setAppLanguage('id')" class="py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-cyan-500/20 border-cyan-400 text-cyan-300">
+                                <span class="text-base">🇮🇩</span> <span>Bahasa Indonesia</span>
+                            </button>
+                            <button id="lang-btn-en" onclick="setAppLanguage('en')" class="py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-slate-950 border-blue-900/50 text-gray-400 hover:text-white">
+                                <span class="text-base">🇬🇧</span> <span>English</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. TAB RINGKASAN UPDATE -->
+                <div id="menu-tab-summary" class="hidden space-y-3">
+                    <div class="p-3 bg-slate-950 rounded-xl border border-blue-900/50 space-y-2">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block" id="label-update-header">UPDATE TERBARU HARI INI</span>
+                        <h4 class="text-sm font-extrabold text-white">Spot the Spy V1.9.0</h4>
+                        <ul class="space-y-2 text-[11px] text-gray-300 list-disc list-inside leading-relaxed">
+                            <li><strong>Ikon Detektif Kaca Pembesar Hologram:</strong> Ilustrasi detektif baru dengan kaca pembesar bernuansa cyan, biru elektrik, ungu neon & aksen oranye.</li>
+                            <li><strong>Bagian PERAN di Halaman Utama:</strong> Kartu WARGA SIPIL, SPY, WARGA SPECIAL, dan SPY GLITCH dapat diketuk untuk panduan mendalam.</li>
+                            <li><strong>Redesain UI Cyberpunk:</strong> Warna futuristik biru-neon-cyan di seluruh halaman game.</li>
+                            <li><strong>150 Kosakata Reguler & Clue Otomatis:</strong> 25 kata/kategori dengan petunjuk unik bagi Warga Sipil.</li>
+                            <li><strong>5 Kartu Spesial Sinematik:</strong> Jokowi, Ronaldo, EVOS, Spotify, Cireng Suwir.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. TAB CARA BERMAIN -->
+                <div id="menu-tab-rules" class="hidden space-y-3 leading-relaxed">
+                    <h4 class="font-bold text-white text-sm" id="rules-title-modal">Panduan Permainan Spot the Spy V1.9.0</h4>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-300 text-[11px]" id="rules-list-modal">
+                        <li><strong>Peran:</strong> Warga Sipil menerima kata rahasia + clue langsung. Mata-mata hanya menerima "???".</li>
+                        <li><strong>Membuka Kartu:</strong> Ketuk kartu untuk membuka peran Anda. Kartu terbuka 1x dan tidak dapat ditutup kembali.</li>
+                        <li><strong>Dadu & Arah:</strong> Kocok dadu digital untuk menentukan pembicara pertama dan arah melingkar meja.</li>
+                        <li><strong>3 Stage Diskusi:</strong> Setiap pemain memberikan 1 kata petunjuk di setiap Stage (1-3).</li>
+                        <li><strong>Sidang Vote 3D:</strong> Setelah Stage 3 selesai, vote bergiliran untuk mendeportasi terduga Mata-mata.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-950 border-t border-blue-900/50 text-center">
+                <button onclick="toggleTopNavMenu()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 border border-blue-800/40 text-gray-300 font-bold rounded-xl text-xs transition-colors" id="btn-close-menu-overlay">
+                    Tutup Menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL PENJELASAN PERAN (BARU) ================= -->
+    <div id="modal-role-info" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-blue-800/60 max-w-sm w-full rounded-2xl overflow-hidden p-6 text-center space-y-4 shadow-2xl">
+            <div id="role-info-icon-container" class="w-14 h-14 mx-auto rounded-full flex items-center justify-center border text-2xl">
+                <!-- Diisi via JS -->
+            </div>
+            
+            <div class="space-y-1">
+                <h3 id="role-info-modal-title" class="font-black text-white text-lg tracking-wider uppercase">---</h3>
+                <span id="role-info-modal-subtitle" class="text-[10px] font-bold uppercase tracking-widest text-cyan-300 block">PANEL INFORMASI PERAN</span>
+            </div>
+
+            <div class="p-4 bg-slate-950/90 rounded-2xl border border-blue-900/50 text-left text-xs text-gray-300 leading-relaxed space-y-2">
+                <p id="role-info-modal-body">
+                    <!-- Penjelasan lengkap diisi via JS -->
+                </p>
+            </div>
+
+            <button onclick="closeRoleInfoModal()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-black rounded-xl text-xs transition-all shadow-md">
+                Kembali Ke Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL LIHAT KATA RAHASIA ================= -->
+    <div id="modal-reveal-secret" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-blue-800/60 max-w-sm w-full rounded-2xl overflow-hidden p-6 text-center space-y-4 shadow-2xl">
+            <h3 class="font-bold text-white text-lg" id="modal-reveal-title">Intip Kata Rahasia Anda</h3>
+            <p class="text-xs text-gray-300" id="modal-reveal-subtitle">Pastikan tidak ada orang lain di dekat Anda yang melihat layar!</p>
+            
+            <div class="py-5 px-4 bg-slate-950/90 rounded-2xl border border-blue-900/50 my-4 space-y-3">
+                <div>
+                    <span class="text-[10px] text-gray-400 font-bold block uppercase tracking-widest mb-1" id="label-role-data">DATA PERAN RAHASIA</span>
+                    <span id="revealed-secret-role-display" class="block text-base font-black uppercase text-teal-300">Warga Sipil</span>
+                </div>
+                
+                <div class="border-t border-blue-900/40 pt-3">
+                    <span class="text-[9px] text-gray-400 uppercase block font-semibold mb-1" id="label-secret-word-display">Kata Rahasia / Bocoran</span>
+                    <span id="revealed-secret-word-display" class="block text-2xl font-black text-white tracking-wider uppercase">???</span>
+                </div>
+
+                <div id="revealed-clue-section" class="border-t border-blue-900/40 pt-3 hidden">
+                    <span class="text-[9px] text-cyan-300 font-bold uppercase tracking-wider block mb-1">💡 Clue Kata Rahasia:</span>
+                    <p id="revealed-clue-text-box" class="text-xs text-cyan-200 italic bg-blue-950/40 border border-cyan-500/20 p-3 rounded-xl leading-relaxed text-center">
+                        <!-- Clue diisi dinamis -->
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="closeRevealSecretModal()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 border border-blue-800/50 text-white font-bold rounded-xl text-xs transition-colors" id="btn-close-reveal-modal">
+                Tutup Kembali
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= CUSTOM MODAL POPUP DIALOG ================= -->
+    <div id="modal-custom-dialog" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-blue-800/60 max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-5 border-b border-blue-900/50 bg-slate-950 flex items-center space-x-3">
+                <div id="dialog-icon" class="w-10 h-10 rounded-full flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <h3 id="dialog-title" class="font-extrabold text-white text-base">Konfirmasi</h3>
+            </div>
+            <div class="p-5 text-xs text-gray-300 whitespace-pre-line leading-relaxed" id="dialog-message">
+                Detail pesan...
+            </div>
+            <div class="p-4 bg-slate-950 border-t border-blue-900/50 text-right flex justify-end space-x-2" id="dialog-buttons">
+                <!-- Tombol Dinamis -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT GAME LOGIC -->
+    <script>
+        const WORD_CATEGORIES_DATA = {
+            "Buah": [
+                { word: "Durian", clue: "Kulitku dipenuhi duri tajam dan memiliki aroma yang menyengat." },
+                { word: "Kelapa", clue: "Memiliki tempurung keras dan berisi air segar serta daging putih." },
+                { word: "Naga", clue: "Kulit luar merah bersisik khas dengan biji hitam kecil di daging buahnya." },
+                { word: "Kurma", clue: "Buah manis legit berwarna cokelat yang sangat populer saat bulan puasa." },
+                { word: "Zaitun", clue: "Buah kecil pembuat minyak sehat yang kaya akan manfaat kesehatan." },
+                { word: "Alpukat", clue: "Memiliki daging lembut kehijauan, biji bulat besar, dan sering dijadikan jus." },
+                { word: "Lemon", clue: "Berwarna kuning cerah dengan rasa asam yang sangat menyegarkan." },
+                { word: "Delima", clue: "Di dalamnya berisi ratusan biji merah transparan seperti permata." },
+                { word: "Nanas", clue: "Memiliki mahkota daun hijau bertekstur kasar dan rasa asam manis." },
+                { word: "Manggis", clue: "Dijuluki ratu buah dengan kulit ungu tebal dan isi putih manis." },
+                { word: "Rambutan", clue: "Bagian luar tubuhku dipenuhi rambut merah tipis yang unik." },
+                { word: "Salak", clue: "Kulit luarku bersisik cokelat seperti kulit ular dan buahnya renyah." },
+                { word: "Kecapi", clue: "Buah bulat kekuningan yang cara membukanya sering dijepit di engsel pintu." },
+                { word: "Kesemek", clue: "Kulit luarku sering terlihat seperti bedakan bertepung putih." },
+                { word: "Sawo", clue: "Buah lonjong manis bertekstur halus dengan warna cokelat tanah." },
+                { word: "Leci", clue: "Buah kecil bulat berdaging putih bening dengan aroma harum khas." },
+                { word: "Kiwi", clue: "Kulit cokelat berbulu halus dengan daging hijau penuh biji hitam." },
+                { word: "Blewah", clue: "Sering diserut untuk es campur manis segar penutup dahaga." },
+                { word: "Semangka", clue: "Kulit hijau bergaris dengan isi merah segar berair banyak." },
+                { word: "Pisang", clue: "Berwarna kuning melengkung manis yang sangat disukai primata." },
+                { word: "Duwet", clue: "Juga dikenal sebagai jamblang, memberikan efek warna keunguan di lidah." },
+                { word: "Bisbul", clue: "Dijuluki buah mentega karena dagingnya renyah beraroma lembut." },
+                { word: "Markisa", clue: "Di dalamnya terdapat banyak biji berselaput bulir asam manis." },
+                { word: "Sirsak", clue: "Kulit berduri lunak hijau dengan daging serat putih asam segar." },
+                { word: "Gandum", clue: "Bulir tanaman pangan utama bahan baku pembuat tepung dan roti." }
+            ],
+            "Makanan": [
+                { word: "Rendang", clue: "Olahan daging sapi kaya rempah bersantan yang dinobatkan terlezat." },
+                { word: "Martabak", clue: "Makanan tebal adonan gurih berinti telur atau manis topping leleh." },
+                { word: "Seblak", clue: "Jajanan pedas berkuah kencur gurih dengan kerupuk basah lezat." },
+                { word: "Tumpeng", clue: "Nasi kuning berbentuk kerucut yang disajikan saat syukuran." },
+                { word: "Pempek", clue: "Makanan khas Palembang berbahan ikan yang dinikmati bersama kuah cuko." },
+                { word: "Sushi", clue: "Nasi gulung khas Jepang yang diisi ikan segar atau rumput laut." },
+                { word: "Samyang", clue: "Mie instan pedas membakar lidah populer asal Korea Selatan." },
+                { word: "Rawon", clue: "Sup daging berkuah hitam pekat khas yang menggunakan bumbu kluwek." },
+                { word: "Gado-Gado", clue: "Aneka sayur rebus berkuah bumbu kacang gurih nikmat." },
+                { word: "Bakso", clue: "Bola daging kenyal berkuah kaldu hangat yang disukai banyak orang." },
+                { word: "Ketoprak", clue: "Perpaduan bihun, tahu, dan tauge yang disiram saus kacang gurih." },
+                { word: "Sate", clue: "Potongan daging yang ditusuk lidi lalu dipanggang di atas arang." },
+                { word: "Se'i", clue: "Kuliner olahan daging asap khas Nusa Tenggara Timur beraroma harum." },
+                { word: "Gudeg", clue: "Masakan khas Jogja berbahan nangka muda berkuesioner manis gurih." },
+                { word: "Soto", clue: "Hidangan berkuah kuning hangat isi ayam atau daging khas Nusantara." },
+                { word: "Opor", clue: "Ayam berkuah santan gurih melimpah yang wajib ada saat Lebaran." },
+                { word: "Bakpao", clue: "Roti kukus lembut putih berisi cokelat, kacang, atau daging." },
+                { word: "Takoyaki", clue: "Cemilan berbentuk bola-bola tepung panggang berisi potongan gurita." },
+                { word: "Ramen", clue: "Mie kuah khas Jepang berkaldu gurih dengan topping telur rebus." },
+                { word: "Batagor", clue: "Bakso tahu goreng disiram bumbu kacang gurih renyah." },
+                { word: "Kerak Telor", clue: "Jajanan khas Betawi dari ketan dan telur yang dimasak di wajan dibalik." },
+                { word: "Papeda", clue: "Makanan khas Papua dari bubur sagu kenyal yang disantap dengan kuah kuning." },
+                { word: "Mi Celor", clue: "Sajian mi khas Palembang berkuah kaldu udang kental gurih." },
+                { word: "Nasi Jamblang", clue: "Kuliner khas Cirebon yang dibungkus dengan daun jati harum." },
+                { word: "Sate Lilit", clue: "Sate khas Bali beradonan cincang gurih yang dililitkan pada batang serai." }
+            ],
+            "Hewan": [
+                { word: "Bunglon", clue: "Reptil kecil yang mahir mengubah warna kulit sesuai lingkungan." },
+                { word: "Kelelawar", clue: "Mamalia bersayap yang aktif berburu di malam hari menggunakan ekolokasi." },
+                { word: "Koala", clue: "Mamalia lambat pemakan daun eukaliptus yang suka tidur di pohon." },
+                { word: "Gurita", clue: "Hewan laut cerdas bercangkang dalam dengan delapan lengan fleksibel." },
+                { word: "Kangguru", clue: "Mamalia pelompat handal yang memiliki kantung di bagian perutnya." },
+                { word: "Unta", clue: "Hewan tangguh gurun pasir yang menyimpan cadangan lemak di punuknya." },
+                { word: "Penguin", clue: "Burung laut berbaju jas hitam putih yang pandai berenang di kutub." },
+                { word: "Kunang-Kunang", clue: "Serangga malam yang dapat menghasilkan cahaya indah dari tubuhnya." },
+                { word: "Burung Hantu", clue: "Burung pemangsa nocturnal yang bisa memutar kepalanya sangat jauh." },
+                { word: "Landak", clue: "Tubuhku diselimuti rambut berduri tajam untuk pertahanan diri." },
+                { word: "Platipus", clue: "Mamalia unik bertelur yang memiliki paruh mirip bebek." },
+                { word: "Merak", clue: "Burung berbakat dengan bulu ekor indah yang bisa mekar mempesona." },
+                { word: "Rajawali", clue: "Burung pemangsa besar berpandangan tajam penghuni angkasa." },
+                { word: "Kuda Nil", clue: "Mamalia sungai besar berdaging tebal yang suka berendam air." },
+                { word: "Sloth", clue: "Hewan mamalia berambut yang bergerak super lambat di pepohonan." },
+                { word: "Lumba-Lumba", clue: "Mamalia laut cerdas yang suka melompat gembira di permukaan." },
+                { word: "Cheetah", clue: "Kucing besar totol yang memegang rekor pelari tercepat di darat." },
+                { word: "Komodo", clue: "Kadal raksasa purba endemik Indonesia yang liurnya beracun." },
+                { word: "Iguana", clue: "Kadal herbivora bergelambir dengan deretan duri di sepanjang punggung." },
+                { word: "Harimau", clue: "Kucing besar pemangsa bergaris loreng oranye hitam yang gagah." },
+                { word: "Tapir", clue: "Hewan bermoncong panjang lentur dengan corak tubuh separuh hitam putih." },
+                { word: "Trenggiling", clue: "Mamalia bersisik keras yang akan menggulung tubuhnya seperti bola." },
+                { word: "Rangkong", clue: "Burung eksotis yang memiliki tanduk atau balung besar di atas paruhnya." },
+                { word: "Kukang", clue: "Primata nocturnal kecil pemalu yang bergerak sangat lambat." },
+                { word: "Tarsius", clue: "Primata terkece berbadan mungil dengan bola mata bulat sangat besar." }
+            ],
+            "Negara": [
+                { word: "Arab Saudi", clue: "Negara tempat berdirinya Ka'bah di kota suci Makkah." },
+                { word: "Jepang", clue: "Julukannya Negeri Sakura yang terkenal dengan animasi dan teknologi." },
+                { word: "Mesir", clue: "Negara piramida kuno yang dilintasi Sungai Nil legendaris." },
+                { word: "Brasil", clue: "Negara Amerika Selatan pemilik hutan Amazon dan raksasa sepak bola." },
+                { word: "Italia", clue: "Negara berbentuk sepatu boot pencipta Pizza dan Colosseum." },
+                { word: "India", clue: "Negara Bollywood pemilik monumen megah Taj Mahal." },
+                { word: "Prancis", clue: "Negara mode dunia tempat berdirinya Menara Eiffel ikonik." },
+                { word: "Yunani", clue: "Negara sejarah para dewa mitologi dan asal usul Olimpiade." },
+                { word: "Rusia", clue: "Negara terluas di dunia dengan iklim salju dan Kremlin." },
+                { word: "Vatikan", clue: "Negara berdaulat terkecil di dunia yang berada di tengah kota Roma." },
+                { word: "Indonesia", clue: "Negara kepulauan terbesar pemilik Candi Borobudur dan Garuda." },
+                { word: "Jerman", clue: "Negara Eropa industri produsen mobil mewah dan kastil megah." },
+                { word: "Korea Selatan", clue: "Negara asal gelombang budaya K-Pop dan drama populer." },
+                { word: "Madagaskar", clue: "Negara pulau Afrika eksotis tempat tinggal spesies lemur." },
+                { word: "Belanda", clue: "Negara kincir angin yang terkenal dengan bunga tulip dan kanal." },
+                { word: "Turki", clue: "Negara dua benua tempat indahnya balon udara Cappadocia." },
+                { word: "Swiss", clue: "Negara pegunungan Alpen pembuat cokelat dan jam terbaik." },
+                { word: "Meksiko", clue: "Negara khas Sombrero pencipta kuliner Taco pedas lezat." },
+                { word: "Australia", clue: "Negara benua tetangga yang identik dengan kangguru dan Opera House." },
+                { word: "Kanada", clue: "Negara utara bersalju dengan lambang daun maple pada benderanya." },
+                { word: "Bhutan", clue: "Negara pegunungan Himalaya yang mengukur kemajuan dari kebahagiaan." },
+                { word: "Laos", clue: "Negara di Asia Tenggara yang wilayahnya sama sekali tidak memiliki laut." },
+                { word: "Suriname", clue: "Negara Amerika Selatan yang memiliki populasi keturunan Jawa cukup banyak." },
+                { word: "Slovenia", clue: "Negara Eropa indah pemegang pemandangan danau Bled bernuansa dongeng." },
+                { word: "Monako", clue: "Negara kerajaan kecil nan mewah tempat arena balap jalanan Formula 1." }
+            ],
+            "Tempat": [
+                { word: "Candi Borobudur", clue: "Monumen Buddha megah terbesar di dunia dengan susunan stupa batu." },
+                { word: "Gurun Pasir", clue: "Hamparan daratan gersang luas berpasir yang sangat panas." },
+                { word: "Perpustakaan", clue: "Tempat tenang koleksi ribuan buku tempat membaca dan belajar." },
+                { word: "Museum", clue: "Tempat penyimpanan benda artefak bersejarah karya masa lalu." },
+                { word: "Bandara", clue: "Tempat lepas landas dan mendaratnya pesawat terbang." },
+                { word: "Apotek", clue: "Tempat resmi pembeli obat racikan dan kebutuhan kesehatan." },
+                { word: "Kebun Binatang", clue: "Kawasan penangkaran tempat masyarakat melihat aneka satwa." },
+                { word: "Bioskop", clue: "Tempat layar lebar besar untuk menonton film layar lebar terbaru." },
+                { word: "Pelabuhan", clue: "Tempat bersandar dan berlabuhnya kapal-kapal laut." },
+                { word: "Stasiun Luar Antariksa", clue: "Laboratorium melayang di luar angkasa tempat astronot bekerja." },
+                { word: "Menara Eiffel", clue: "Menara besi tinggi di kota Paris yang sangat terkenal ikonik." },
+                { word: "Labirin", clue: "Jalur belokan rumit penuh seluk beluk yang membingungkan." },
+                { word: "Kasino", clue: "Tempat arena permainan ketangkasan meja dan keberuntungan." },
+                { word: "Rumah Sakit", clue: "Fasilitas medis tempat dokter merawat pasien berobat." },
+                { word: "Sekolah", clue: "Tempat para murid menuntut ilmu bersama para guru." },
+                { word: "Kantor Polisi", clue: "Tempat aparat penegak hukum mengamankan kedamaian." },
+                { word: "Taman Bermain", clue: "Area hiburan luar ruangan penuh wahana bianglala dan permainan." },
+                { word: "Gunung Berapi", clue: "Gunung aktif yang dapat melontarkan lahar panas saat erupsi." },
+                { word: "Pasar Malam", clue: "Pasar terbuka penuh lampu warna-warni yang ramai saat malam hari." },
+                { word: "Kastil", clue: "Bangunan benteng megah kuno tempat tinggal para raja dan bangsawan." },
+                { word: "Planetarium", clue: "Tempat khusus untuk mengamati proyeksi susunan bintang dan planet." },
+                { word: "Observatorium", clue: "Gedung berdinding kubah tempat teropong bintang raksasa berada." },
+                { word: "Akuarium", clue: "Tempat pemeliharaan dan pameran aneka satwa bawah air." },
+                { word: "Arboretum", clue: "Kebun botani tempat mengoleksi dan meneliti pepohonan langka." },
+                { word: "Amfiteater", clue: "Gelanggang terbuka setengah lingkaran untuk pertunjukan drama." }
+            ],
+            "Benda": [
+                { word: "Kompas", clue: "Alat petunjuk arah mata angin yang memiliki jarum magnetis." },
+                { word: "Paspor", clue: "Dokumen identitas resmi wajib untuk bepergian antar negara." },
+                { word: "Kacamata", clue: "Lensa bantu penglihatan yang dipasang di depan mata." },
+                { word: "Jam Pasir", clue: "Alat pengukur waktu kuno dari butiran halus yang jatuh perlahan." },
+                { word: "Mikroskop", clue: "Alat optik laboratorium untuk melihat benda super kecil sel." },
+                { word: "Setrika", clue: "Alat listrik pemanas untuk merapikan pakaian kusut." },
+                { word: "Termometer", clue: "Alat ukur suhu tubuh atau ruangan." },
+                { word: "Teleskop", clue: "Teropong jarak jauh untuk mengamati benda luar angkasa." },
+                { word: "Kamera", clue: "Alat penangkap gambar dan pengabadi momen potret." },
+                { word: "Senter", clue: "Alat genggam pemancar cahaya penerang dalam gelap." },
+                { word: "Kunci", clue: "Benda logam pengaman pembuka gembok atau pintu rumah." },
+                { word: "Jam Tangan", clue: "Penunjuk waktu yang melingkar nyaman di pergelangan tangan." },
+                { word: "Payung", clue: "Pelindung portabel dari hujan deras atau terik matahari." },
+                { word: "Gitar", clue: "Alat musik petik berdawai yang memiliki tabung akustik." },
+                { word: "Helm", clue: "Pelindung kepala wajib saat mengendarai sepeda motor." },
+                { word: "Drone", clue: "Pesawat nirawak berkamera yang dikendalikan remote control." },
+                { word: "Proyektor", clue: "Alat pemancar gambar visual dari komputer ke dinding." },
+                { word: "Flashdisk", clue: "Media mungil penyimpan berkas data digital portabel." },
+                { word: "Dompet", clue: "Wadah saku tempat menyimpan uang tunai dan kartu penting." },
+                { word: "Cermin", clue: "Kaca reflektif tempat kita dapat melihat bayangan diri." },
+                { word: "Astrolab", clue: "Instrumen astronomi kuno untuk mengukur posisi benda langit." },
+                { word: "Gnomon", clue: "Batang penunjuk jam matahari yang memanfaatkan posisi bayangan." },
+                { word: "Kaleidoskop", clue: "Tabung mainan optik dengan simetri pantulan warna-warni." },
+                { word: "Kompas Bidik", clue: "Kompas lapangan yang dilengkapi bidikan presisi untuk navigasi." },
+                { word: "Barometer", clue: "Alat pengukur tekanan udara untuk memprediksi perubahan cuaca." }
+            ]
+        };
+
+        const SPECIAL_CARDS_DATA = [
+            { word: "Jokowi", title: "Presiden RI Ke-7 🇮🇩", desc: "Tokoh ikonik nasional yang identik dengan gaya kemeja putih dan blusukan megah!", theme: "jokowi" },
+            { word: "Ronaldo", title: "CR7 Legend ⚽", desc: "Bintang sepak bola dunia pemegang rekor gol terbanyak dengan selebrasi 'SIUUU'!", theme: "ronaldo" },
+            { word: "EVOS", title: "EVOS Esports 💙", desc: "Macan Biru raksasa esports Indonesia, juara dunia Mobile Legends M1 World!", theme: "evos" },
+            { word: "Spotify", title: "Pemutar Musik 🎵", desc: "Platform musik digital hijau-hitam tempat playlist favorit berdendang setiap saat!", theme: "spotify" },
+            { word: "Cireng Suwir", title: "Kuliner Gurih Pedas 🌶️", desc: "Camilan tepung aci goreng renyah hangat diisi suwiran ayam pedas menggugah selera!", theme: "cireng" }
+        ];
+
+        const TRANSLATIONS = {
+            id: {
+                subtitle: "Temukan mata-mata",
+                badgeTag: "Game Kumpul Seru",
+                heroTitle: 'Temukan sang <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-rose-400 to-purple-400">Penyusup</span>!',
+                heroDesc: 'Satu HP diputar bergantian. Warga Sipil mendapatkan kata rahasia yang sama + petunjuk (clue) langsung. Sang Mata-mata tidak mendapatkan kata rahasia sama sekali (Hanya tanda tanya "???")!',
+                configTitle: 'Konfigurasi Permainan',
+                catSelect: 'Kategori Kata (25 Kata Menantang per Kategori)',
+                playerCount: 'Jumlah Pemain (3 - 12)',
+                civCount: 'Warga Sipil',
+                spyCount: 'Mata-mata',
+                playerNames: 'Isi Nama Pemain',
+                startDistribute: 'Bagi Kartu Peran',
+                secretId: 'Identitas Rahasia',
+                tapInstruction: '<i class="fa-solid fa-hand-pointer mr-1"></i> Ketuk kartu untuk membuka',
+                keepSecret: 'TETAP RAHASIA',
+                rememberQuote: '"Ingat kata Anda, lalu tekan Lanjut"',
+                nextDistribute: 'Lanjut Ke Pemain Berikutnya',
+                diceTurn: 'Urutan Bermain',
+                diceTitle: 'Kocok Dadu Penentu',
+                diceInstruction: 'Kocok dadu digital di bawah untuk menentukan siapa yang akan mendapat giliran berbicara pertama.',
+                starterPlayer: 'PEMAIN TERPILIH PERTAMA',
+                selectDirection: 'Tentukan Arah Putaran Selanjutnya:',
+                dirRight: 'Melingkar Kanan',
+                dirLeft: 'Melingkar Kiri',
+                rollDice: 'Kocok Dadu',
+                startDiscussion: 'Mulai Sesi Diskusi',
+                activePlayers: 'Sisa Pemain',
+                myWord: 'Kata Saya',
+                speakingTurn: 'Giliran Berbicara',
+                giveClue: 'Silakan Berikan 1 Petunjuk Kata',
+                giveClueDesc: 'Sebutkan 1 kata yang mendeskripsikan kata rahasia Anda tanpa langsung menyebutkan kata aslinya!',
+                doneClue: 'Selesai Beri Petunjuk',
+                votePrompt: 'siapa Mata-matanya?',
+                voteDesc: 'Pilih secara rahasia siapa yang Anda curigai sebagai Mata-mata (Pilihan langsung terekam).',
+                backToDiscuss: 'Kembali Ke Diskusi',
+                playAgain: 'Main Lagi (Aturan Sama)',
+                backMainMenu: 'Kembali Ke Menu Utama'
+            },
+            en: {
+                subtitle: "Spot the impostor",
+                badgeTag: "Party Game Fun",
+                heroTitle: 'Spot the <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-rose-400 to-purple-400">Impostor</span>!',
+                heroDesc: 'Pass one phone around. Civilians get the same secret word + direct clue. The Spy gets no word at all (Only question marks "???")!',
+                configTitle: 'Game Configuration',
+                catSelect: 'Word Category (25 Words per Category)',
+                playerCount: 'Number of Players (3 - 12)',
+                civCount: 'Civilians',
+                spyCount: 'Spy',
+                playerNames: 'Enter Player Names',
+                startDistribute: 'Distribute Role Cards',
+                secretId: 'Secret Identity',
+                tapInstruction: '<i class="fa-solid fa-hand-pointer mr-1"></i> Tap card to reveal',
+                keepSecret: 'KEEP SECRET',
+                rememberQuote: '"Memorize your word, then tap Next"',
+                nextDistribute: 'Next Player',
+                diceTurn: 'Turn Order',
+                diceTitle: 'Roll Decision Dice',
+                diceInstruction: 'Roll the digital dice to determine who speaks first.',
+                starterPlayer: 'FIRST CHOSEN SPEAKER',
+                selectDirection: 'Select Circle Direction:',
+                dirRight: 'Clockwise',
+                dirLeft: 'Counter-Clockwise',
+                rollDice: 'Roll Dice',
+                startDiscussion: 'Start Discussion',
+                activePlayers: 'Remaining Players',
+                myWord: 'My Word',
+                speakingTurn: 'Speaking Turn',
+                giveClue: 'Give 1 Word Clue',
+                giveClueDesc: 'Say 1 word describing your secret word without stating the actual word!',
+                doneClue: 'Finished Giving Clue',
+                votePrompt: 'who is the Spy?',
+                voteDesc: 'Secretly vote for who you suspect as the Spy.',
+                backToDiscuss: 'Back to Discussion',
+                playAgain: 'Play Again (Same Setup)',
+                backMainMenu: 'Back to Main Menu'
+            }
+        };
+
+        let currentLang = 'id';
+
+        let gameState = {
+            selectedCategory: 'all',
+            players: [],
+            civilianWord: "",
+            civilianClue: "",
+            activePlayerIndex: 0,
+            distributeStage: 'peek',
+            currentPlayerCount: 4,
+            currentStage: 1,
+            currentSpeakingIndex: 0, 
+            speakingOrder: [],
+            playersSpokenThisStage: [], 
+            votingTurnIndex: 0, 
+            votesReceived: {},
+            starterPlayerId: null,
+            usedWords: {},
+            turnDirection: 'right',
+            isSpecialMode: false,
+            specialCardObj: null
+        };
+
+        let isProcessingDistributionStep = false;
+        let savedPlayerNamesList = [];
+
+        function getSecureRandom() {
+            try {
+                if (window.crypto && window.crypto.getRandomValues) {
+                    const array = new Uint32Array(1);
+                    window.crypto.getRandomValues(array);
+                    return array[0] / (0xffffffff + 1);
+                }
+            } catch (e) {
+                console.warn("Secure random fallback to Math.random");
+            }
+            return Math.random();
+        }
+
+        function secureShuffle(array) {
+            const arr = [...array];
+            for (let pass = 0; pass < 5; pass++) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(getSecureRandom() * (i + 1));
+                    const temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+            return arr;
+        }
+
+        function getGlitchHint(word) {
+            let glitched = "";
+            for (let i = 0; i < word.length; i++) {
+                if (word[i] === " ") {
+                    glitched += "   ";
+                } else if (i === 0 || i === word.length - 1 || i % 2 === 0) {
+                    glitched += word[i].toUpperCase();
+                } else {
+                    glitched += "*";
+                }
+            }
+            return glitched;
+        }
+
+        window.onload = function() {
+            renderCategoryButtons();
+            renderPlayerInputs();
+        }
+
+        function toggleTopNavMenu() {
+            playSound('click');
+            const modal = document.getElementById("modal-top-nav-menu");
+            modal.classList.toggle("hidden");
+        }
+
+        function switchMenuTab(tabKey) {
+            playSound('click');
+            const tabs = ['settings', 'summary', 'rules'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                const content = document.getElementById(`menu-tab-${t}`);
+                if (t === tabKey) {
+                    btn.className = "py-3 text-cyan-300 border-b-2 border-cyan-400 bg-slate-900/50";
+                    content.classList.remove("hidden");
+                } else {
+                    btn.className = "py-3 hover:text-white border-b-2 border-transparent";
+                    content.classList.add("hidden");
+                }
+            });
+        }
+
+        function openRoleInfoModal(roleType) {
+            playSound('click');
+            const modal = document.getElementById("modal-role-info");
+            const iconContainer = document.getElementById("role-info-icon-container");
+            const titleEl = document.getElementById("role-info-modal-title");
+            const bodyEl = document.getElementById("role-info-modal-body");
+
+            if (roleType === 'CIVILIAN') {
+                iconContainer.className = "w-14 h-14 mx-auto rounded-full flex items-center justify-center border text-2xl bg-teal-500/20 text-teal-300 border-teal-500/40";
+                iconContainer.innerHTML = `<i class="fa-solid fa-user-shield"></i>`;
+                titleEl.innerText = "WARGA SIPIL";
+                bodyEl.innerHTML = `
+                    Warga Sipil merupakan kelompok mayoritas dalam permainan. Seluruh Warga Sipil menerima kata rahasia yang sama sesuai kategori yang dipilih lengkap dengan petunjuk (clue) kata.<br><br>
+                    <strong>Tujuan:</strong> Pahami kata rahasia Anda dan berikan 1 kata petunjuk yang relevan tanpa membocorkan kata utama secara gamblang. Dengarkan percakapan pemain lain untuk menemukan sang Spy yang kebingungan!
+                `;
+            } else if (roleType === 'SPY') {
+                iconContainer.className = "w-14 h-14 mx-auto rounded-full flex items-center justify-center border text-2xl bg-rose-500/20 text-rose-400 border-rose-500/40";
+                iconContainer.innerHTML = `<i class="fa-solid fa-user-ninja"></i>`;
+                titleEl.innerText = "SPY";
+                bodyEl.innerHTML = `
+                    Mata-mata (Spy) merupakan penyusup di antara forum. Anda sama sekali tidak menerima kata rahasia maupun clue (hanya tanda "???").<br><br>
+                    <strong>Tujuan:</strong> Simak dengan cermat kata petunjuk yang diucapkan oleh para Warga Sipil. Berbaurlah dengan memberikan petunjuk umum agar tidak dicurigai, dan bertahanlah hingga akhir tanpa tereliminasi di sesi voting!
+                `;
+            } else if (roleType === 'SPECIAL') {
+                iconContainer.className = "w-14 h-14 mx-auto rounded-full flex items-center justify-center border text-2xl bg-amber-500/20 text-amber-300 border-amber-500/40";
+                iconContainer.innerHTML = `<i class="fa-solid fa-star"></i>`;
+                titleEl.innerText = "WARGA SPECIAL";
+                bodyEl.innerHTML = `
+                    WARGA SPECIAL muncul dalam babak langka (Peluang 25%). Dalam babak ini, Warga Sipil akan menerima kartu bertema tokoh atau entitas sinematik khusus:<br>
+                    • <strong>Jokowi:</strong> Tokoh ikonik nasional RI.<br>
+                    • <strong>Ronaldo:</strong> Bintang sepak bola CR7.<br>
+                    • <strong>EVOS:</strong> Macan Biru Esports Indonesia.<br>
+                    • <strong>Spotify:</strong> Platform pemutar musik favorit.<br>
+                    • <strong>Cireng Suwir:</strong> Kuliner gurih pedas khas.<br><br>
+                    Mekanisme permainan tetap seimbang dan adil!
+                `;
+            } else if (roleType === 'GLITCH') {
+                iconContainer.className = "w-14 h-14 mx-auto rounded-full flex items-center justify-center border text-2xl bg-purple-500/20 text-purple-300 border-purple-500/40";
+                iconContainer.innerHTML = `<i class="fa-solid fa-bug"></i>`;
+                titleEl.innerText = "SPY GLITCH";
+                bodyEl.innerHTML = `
+                    SPY GLITCH adalah kemampuan peretasan langka bagi Spy (Peluang 25%). Saat kartu ini didapatkan, Spy berhasil meretas sistem dan mendapatkan bocoran kata Warga Sipil yang di-glitch (contoh: D*R*A*).<br><br>
+                    <strong>Tujuan:</strong> Gunakan bocoran huruf terpotong tersebut untuk menebak kata rahasia Sipil dan menyusun petunjuk palsu yang sangat meyakinkan!
+                `;
+            }
+
+            modal.classList.remove("hidden");
+        }
+
+        function closeRoleInfoModal() {
+            playSound('click');
+            document.getElementById("modal-role-info").classList.add("hidden");
+        }
+
+        function setAppLanguage(lang) {
+            playSound('click');
+            currentLang = lang;
+            
+            const btnId = document.getElementById("lang-btn-id");
+            const btnEn = document.getElementById("lang-btn-en");
+            
+            if (lang === 'id') {
+                btnId.className = "py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-cyan-500/20 border-cyan-400 text-cyan-300";
+                btnEn.className = "py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-slate-950 border-blue-900/50 text-gray-400 hover:text-white";
+            } else {
+                btnEn.className = "py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-cyan-500/20 border-cyan-400 text-cyan-300";
+                btnId.className = "py-3 px-4 rounded-xl border flex items-center justify-center space-x-2 font-bold bg-slate-950 border-blue-900/50 text-gray-400 hover:text-white";
+            }
+
+            applyLanguageTranslations();
+        }
+
+        function applyLanguageTranslations() {
+            const t = TRANSLATIONS[currentLang];
+            document.getElementById("header-subtitle").innerHTML = `${t.subtitle} &bull; <span class="text-orange-400 font-semibold">Dev by nderw</span>`;
+            document.getElementById("badge-game-tag").innerText = t.badgeTag;
+            document.getElementById("main-hero-title").innerHTML = t.heroTitle;
+            document.getElementById("main-hero-desc").innerText = t.heroDesc;
+            document.getElementById("label-config-title").innerText = t.configTitle;
+            document.getElementById("label-category-select").innerText = t.catSelect;
+            document.getElementById("label-player-count").innerText = t.playerCount;
+            document.getElementById("label-civ-count").innerText = t.civCount;
+            document.getElementById("label-spy-count").innerText = t.spyCount;
+            document.getElementById("label-player-names").innerText = t.playerNames;
+            document.getElementById("btn-start-distribute").innerHTML = `${t.startDistribute} <i class="fa-solid fa-fingerprint ml-1"></i>`;
+            document.getElementById("label-secret-id").innerText = t.secretId;
+            document.getElementById("card-tap-instruction").innerHTML = t.tapInstruction;
+            document.getElementById("card-keep-secret").innerText = t.keepSecret;
+            document.getElementById("card-remember-quote").innerText = t.rememberQuote;
+            document.getElementById("btn-next-distribute-text").innerText = t.nextDistribute;
+            document.getElementById("label-dice-turn").innerText = t.diceTurn;
+            document.getElementById("title-dice-roll").innerText = t.diceTitle;
+            document.getElementById("dice-instruction-text").innerText = t.diceInstruction;
+            document.getElementById("label-chosen-starter").innerText = t.starterPlayer;
+            document.getElementById("label-select-direction").innerText = t.selectDirection;
+            document.getElementById("btn-dir-right-text").innerText = t.dirRight;
+            document.getElementById("btn-dir-left-text").innerText = t.dirLeft;
+            document.getElementById("btn-roll-dice-text").innerText = t.rollDice;
+            document.getElementById("btn-dice-continue-text").innerText = t.startDiscussion;
+            document.getElementById("label-active-players").innerText = t.activePlayers;
+            document.getElementById("btn-my-word-text").innerText = t.myWord;
+            document.getElementById("label-speaking-turn").innerText = t.speakingTurn;
+            document.getElementById("label-give-clue-instruction").innerText = t.giveClue;
+            document.getElementById("desc-clue-instruction").innerText = t.giveClueDesc;
+            document.getElementById("btn-done-clue").innerHTML = `${t.doneClue} <i class="fa-solid fa-check ml-1"></i>`;
+            document.getElementById("voting-prompt-desc").innerText = t.voteDesc;
+            document.getElementById("btn-back-to-discuss").innerText = t.backToDiscuss;
+            document.getElementById("btn-play-again").innerText = t.playAgain;
+            document.getElementById("btn-back-main-menu").innerText = t.backMainMenu;
+        }
+
+        function renderCategoryButtons() {
+            const grid = document.getElementById("category-selector-grid");
+            grid.innerHTML = "";
+
+            const btnAll = document.createElement("button");
+            btnAll.id = "cat-all";
+            btnAll.onclick = () => selectCategory('all');
+            btnAll.className = "py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs rounded-xl border border-cyan-300 transition-all shadow-md";
+            btnAll.innerHTML = `<i class="fa-solid fa-globe mr-1"></i> Semua (150 Kata)`;
+            grid.appendChild(btnAll);
+
+            Object.keys(WORD_CATEGORIES_DATA).forEach(cat => {
+                const btn = document.createElement("button");
+                btn.id = `cat-${cat.toLowerCase()}`;
+                btn.onclick = () => selectCategory(cat);
+                btn.className = "py-2.5 bg-slate-950 text-gray-300 font-semibold text-xs rounded-xl border border-blue-900/50 hover:border-cyan-400/50 transition-all";
+                
+                let icon = "fa-tag";
+                if (cat === "Buah") icon = "fa-apple-whole";
+                if (cat === "Makanan") icon = "fa-utensils";
+                if (cat === "Hewan") icon = "fa-paw";
+                if (cat === "Negara") icon = "fa-flag";
+                if (cat === "Tempat") icon = "fa-map-location-dot";
+                if (cat === "Benda") icon = "fa-box";
+
+                btn.innerHTML = `<i class="fa-solid ${icon} mr-1"></i> ${cat}`;
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectCategory(cat) {
+            playSound('click');
+            gameState.selectedCategory = cat;
+
+            const keys = ['all', ...Object.keys(WORD_CATEGORIES_DATA)];
+            keys.forEach(k => {
+                const el = document.getElementById(`cat-${k.toLowerCase()}`);
+                if (el) {
+                    if (k === cat) {
+                        el.className = "py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs rounded-xl border border-cyan-300 transition-all shadow-md";
+                    } else {
+                        el.className = "py-2.5 bg-slate-950 text-gray-300 font-semibold text-xs rounded-xl border border-blue-900/50 hover:border-cyan-400/50 transition-all";
+                    }
+                }
+            });
+        }
+
+        function showCustomDialog(title, message, type = 'info', buttons = []) {
+            document.getElementById("dialog-title").innerText = title;
+            document.getElementById("dialog-message").innerText = message;
+            
+            const iconContainer = document.getElementById("dialog-icon");
+            iconContainer.className = "w-10 h-10 rounded-full flex items-center justify-center text-lg";
+            
+            if (type === 'success') {
+                iconContainer.className += " bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                iconContainer.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            } else if (type === 'fail') {
+                iconContainer.className += " bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                iconContainer.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                iconContainer.className += " bg-cyan-500/20 text-cyan-300 border border-cyan-500/30";
+                iconContainer.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+            }
+
+            const btnArea = document.getElementById("dialog-buttons");
+            btnArea.innerHTML = "";
+            
+            if (buttons.length === 0) {
+                buttons = [{ text: "Oke", onClick: closeCustomDialog, isPrimary: true }];
+            }
+
+            buttons.forEach(btn => {
+                const button = document.createElement("button");
+                button.innerText = btn.text;
+                button.className = btn.isPrimary 
+                    ? "px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow-md"
+                    : "px-5 py-2 bg-slate-900 border border-blue-800/50 hover:bg-slate-800 text-gray-300 hover:text-white rounded-lg text-xs transition-all";
+                
+                button.onclick = () => { btn.onClick(); };
+                btnArea.appendChild(button);
+            });
+
+            document.getElementById("modal-custom-dialog").classList.remove("hidden");
+        }
+
+        function closeCustomDialog() {
+            playSound('click');
+            document.getElementById("modal-custom-dialog").classList.add("hidden");
+        }
+
+        function adjustPlayers(delta) {
+            playSound('click');
+            saveCurrentPlayerNamesFromUI();
+            
+            let newCount = gameState.currentPlayerCount + delta;
+            if (newCount >= 3 && newCount <= 12) {
+                gameState.currentPlayerCount = newCount;
+                document.getElementById("player-count-display").innerText = `${newCount} ${currentLang === 'id' ? 'Pemain' : 'Players'}`;
+                
+                let spyCount = 1;
+                if (newCount >= 6) spyCount = 2;
+                if (newCount >= 10) spyCount = 3;
+                
+                let civilianCount = newCount - spyCount;
+                document.getElementById("role-civilian-count").innerText = `${civilianCount} ${currentLang === 'id' ? 'Pemain' : 'Players'}`;
+                document.getElementById("role-spy-count").innerText = `${spyCount} ${currentLang === 'id' ? 'Pemain' : 'Players'}`;
+                
+                renderPlayerInputs();
+            }
+        }
+
+        function saveCurrentPlayerNamesFromUI() {
+            savedPlayerNamesList = [];
+            for (let i = 1; i <= gameState.currentPlayerCount; i++) {
+                const inputEl = document.getElementById(`player-name-${i}`);
+                if (inputEl) {
+                    savedPlayerNamesList.push(inputEl.value);
+                }
+            }
+        }
+
+        function renderPlayerInputs() {
+            const container = document.getElementById("player-names-container");
+            container.innerHTML = "";
+
+            for (let i = 1; i <= gameState.currentPlayerCount; i++) {
+                const div = document.createElement("div");
+                div.className = "flex items-center space-x-2";
+
+                const defaultPrefix = currentLang === 'id' ? 'Pemain' : 'Player';
+                const val = (savedPlayerNamesList[i - 1] !== undefined) 
+                    ? savedPlayerNamesList[i - 1] 
+                    : `${defaultPrefix} ${i}`;
+
+                div.innerHTML = `
+                    <span class="text-xs text-gray-400 font-bold w-6">#${i}</span>
+                    <input type="text" id="player-name-${i}" value="${val}" placeholder="Masukkan Nama Pemain ${i}" 
+                           onfocus="this.select()"
+                           class="flex-grow px-3 py-2 bg-slate-950 border border-blue-900/50 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400 transition-colors">
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function hideAllPanels() {
+            document.getElementById("panel-menu").classList.add("hidden");
+            document.getElementById("panel-card-distribution").classList.add("hidden");
+            document.getElementById("panel-dice-roll").classList.add("hidden");
+            document.getElementById("panel-gameplay").classList.add("hidden");
+            document.getElementById("panel-voting").classList.add("hidden");
+            document.getElementById("panel-gameover").classList.add("hidden");
+        }
+
+        function backToMenu() {
+            playSound('click');
+            hideAllPanels();
+            document.getElementById("panel-menu").classList.remove("hidden");
+        }
+
+        function confirmExitToMenu() {
+            playSound('click');
+            showCustomDialog(
+                currentLang === 'id' ? "Kembali ke Menu?" : "Return to Menu?",
+                currentLang === 'id' ? "Apakah Anda yakin ingin menghentikan sesi permainan ini dan kembali ke Menu Utama?" : "Are you sure you want to stop this game session?",
+                "fail",
+                [
+                    { text: currentLang === 'id' ? "Ya, Keluar" : "Yes, Exit", onClick: () => { closeCustomDialog(); backToMenu(); }, isPrimary: true },
+                    { text: currentLang === 'id' ? "Batal" : "Cancel", onClick: closeCustomDialog, isPrimary: false }
+                ]
+            );
+        }
+
+        function getRandomUnusedWordObj(category) {
+            let pool = [];
+            if (category === 'all') {
+                Object.keys(WORD_CATEGORIES_DATA).forEach(cat => {
+                    pool = pool.concat(WORD_CATEGORIES_DATA[cat]);
+                });
+            } else {
+                pool = WORD_CATEGORIES_DATA[category] ? [...WORD_CATEGORIES_DATA[category]] : [];
+            }
+
+            if (!gameState.usedWords[category]) {
+                gameState.usedWords[category] = [];
+            }
+
+            let unusedPool = pool.filter(item => !gameState.usedWords[category].includes(item.word));
+
+            if (unusedPool.length === 0) {
+                gameState.usedWords[category] = [];
+                unusedPool = pool;
+            }
+
+            const chosenObj = unusedPool[Math.floor(getSecureRandom() * unusedPool.length)];
+            gameState.usedWords[category].push(chosenObj.word);
+            return chosenObj;
+        }
+
+        function setupAndStartDistribution() {
+            const playerNames = [];
+            for (let i = 1; i <= gameState.currentPlayerCount; i++) {
+                const nameInput = document.getElementById(`player-name-${i}`);
+                const cleanName = nameInput ? nameInput.value.trim() : "";
+                if (!cleanName) {
+                    playSound('fail');
+                    showCustomDialog("Nama Pemain Kosong!", `Mohon lengkapi nama untuk Pemain #${i} sebelum melanjutkan.`, "fail");
+                    return;
+                }
+                playerNames.push(cleanName);
+            }
+
+            playSound('success');
+
+            const specialRoll = getSecureRandom();
+            if (specialRoll < 0.25) {
+                gameState.isSpecialMode = true;
+                const idxSpec = Math.floor(getSecureRandom() * SPECIAL_CARDS_DATA.length);
+                gameState.specialCardObj = SPECIAL_CARDS_DATA[idxSpec];
+                gameState.civilianWord = gameState.specialCardObj.word;
+                gameState.civilianClue = gameState.specialCardObj.desc;
+            } else {
+                gameState.isSpecialMode = false;
+                gameState.specialCardObj = null;
+                const chosenObj = getRandomUnusedWordObj(gameState.selectedCategory);
+                gameState.civilianWord = chosenObj.word;
+                gameState.civilianClue = chosenObj.clue;
+            }
+
+            const playersData = [];
+            for (let i = 0; i < gameState.currentPlayerCount; i++) {
+                playersData.push({
+                    id: `p-${i + 1}`,
+                    name: playerNames[i],
+                    role: 'civilian',
+                    isAlive: true,
+                    word: gameState.civilianWord,
+                    clue: gameState.civilianClue,
+                    isRareSpy: false
+                });
+            }
+
+            let spyCount = 1;
+            if (gameState.currentPlayerCount >= 6) spyCount = 2;
+            if (gameState.currentPlayerCount >= 10) spyCount = 3;
+
+            let indices = Array.from({length: playersData.length}, (_, i) => i);
+            indices = secureShuffle(indices);
+
+            for (let i = 0; i < spyCount; i++) {
+                const idx = indices[i];
+                playersData[idx].role = 'spy';
+                playersData[idx].word = "???";
+                playersData[idx].clue = "";
+
+                const spyRareRoll = getSecureRandom();
+                if (spyRareRoll < 0.25) {
+                    playersData[idx].isRareSpy = true;
+                }
+            }
+
+            gameState.players = playersData;
+            gameState.activePlayerIndex = 0;
+            gameState.distributeStage = 'peek';
+
+            hideAllPanels();
+            document.getElementById("panel-card-distribution").classList.remove("hidden");
+            setupDistributionUI();
+        }
+
+        function setupDistributionUI() {
+            const player = gameState.players[gameState.activePlayerIndex];
+            document.getElementById("card-owner-name").innerText = player.name;
+            document.getElementById("distribute-title").innerText = `${currentLang === 'id' ? 'Giliran' : 'Turn for'} ${player.name}`;
+
+            const cardInner = document.getElementById("flip-card-inner");
+            cardInner.classList.remove("rotate-y-180");
+            gameState.distributeStage = 'peek';
+
+            const frontCard = document.getElementById("card-front-face");
+            const frontIconContainer = document.getElementById("front-card-icon-container");
+            const frontIcon = document.getElementById("front-card-icon");
+            const frontTag = document.getElementById("front-card-tag");
+
+            frontCard.className = "backface-hidden absolute inset-0 w-full h-full bg-gradient-to-b from-slate-900 via-blue-950 to-slate-950 flex flex-col justify-between p-6 rounded-2xl border-2 border-cyan-500/30";
+            frontIconContainer.className = "w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30 animate-pulse shadow-lg shadow-cyan-500/20";
+            frontIcon.className = "fa-solid fa-lock text-3xl text-cyan-300";
+            frontTag.innerText = "SPOT THE SPY CLASSIFIED";
+
+            const nextBtn = document.getElementById("btn-next-distribute");
+            nextBtn.classList.add("hidden");
+
+            isProcessingDistributionStep = false;
+        }
+
+        function handleCardClickToOpen() {
+            if (gameState.distributeStage !== 'peek' || isProcessingDistributionStep) return;
+            
+            playSound('card');
+            const cardInner = document.getElementById("flip-card-inner");
+            const player = gameState.players[gameState.activePlayerIndex];
+            const backContainer = document.getElementById("card-inner-info");
+            const nextBtn = document.getElementById("btn-next-distribute");
+            const backCard = document.getElementById("card-back-face");
+            const backTag = document.getElementById("back-card-tag");
+
+            const isSpy = player.role === 'spy';
+            
+            if (isSpy && player.isRareSpy) {
+                const glitchWord = getGlitchHint(gameState.civilianWord);
+                backTag.innerText = "⚡ TRANSMISI ILEGAL DIRETAS ⚡";
+                backTag.className = "text-[9px] font-black text-purple-400 tracking-widest";
+                backCard.className = "backface-hidden rotate-y-180 absolute inset-0 w-full h-full bg-gradient-to-b from-black via-purple-950 to-slate-950 flex flex-col justify-between p-5 md:p-6 rounded-2xl border-2 border-purple-500 shadow-xl";
+                backContainer.innerHTML = `
+                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-400 animate-pulse">
+                        <i class="fa-solid fa-bug text-2xl text-purple-300"></i>
+                    </div>
+                    <span class="text-xs font-black text-purple-300 uppercase tracking-widest">PERAN: PENYUSUP GLITCH ⚠️</span>
+                    <div class="space-y-0.5">
+                        <span class="text-[9px] text-gray-400 uppercase block tracking-wider">Sinyal Kata Sipil Bocor:</span>
+                        <h3 class="text-2xl font-black text-cyan-300 tracking-wide uppercase font-mono">${glitchWord}</h3>
+                    </div>
+                    <p class="text-[10px] text-purple-200/90 text-center max-w-[210px] leading-relaxed">
+                        Sinyal diretas! Manfaatkan petunjuk terpotong di atas untuk menyamar!
+                    </p>
+                `;
+            } else if (isSpy && !player.isRareSpy) {
+                backTag.innerText = "INFORMASI DEKSTRUKTIF";
+                backTag.className = "text-[9px] font-bold text-orange-400/50 tracking-widest";
+                backCard.className = "backface-hidden rotate-y-180 absolute inset-0 w-full h-full bg-slate-950 flex flex-col justify-between p-5 md:p-6 rounded-2xl border-2 border-rose-500/40 shadow-xl";
+                backContainer.innerHTML = `
+                    <div class="w-12 h-12 rounded-full bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+                        <i class="fa-solid fa-user-ninja text-2xl text-rose-400"></i>
+                    </div>
+                    <span class="text-xs font-black text-rose-400 uppercase tracking-widest">Peran: Mata-mata</span>
+                    <div class="space-y-0.5">
+                        <span class="text-[9px] text-gray-400 uppercase block tracking-wider">Kata Anda</span>
+                        <h3 class="text-3xl font-black text-white tracking-wide uppercase">???</h3>
+                    </div>
+                    <p class="text-[10px] text-gray-300 text-center max-w-[200px] leading-relaxed">
+                        Anda tidak mendapat kata rahasia! Simak petunjuk Warga Sipil dan berbaurlah!
+                    </p>
+                `;
+            } else if (!isSpy && gameState.isSpecialMode) {
+                const spec = gameState.specialCardObj;
+                backTag.innerText = "⭐ TRANSMISI SPESIAL V1.9.0 ⭐";
+                backTag.className = "text-[9px] font-black text-cyan-300 tracking-widest";
+
+                let themeBgClass = "bg-slate-950 border-cyan-400";
+                let customIconHtml = "";
+
+                if (spec.theme === "jokowi") {
+                    themeBgClass = "bg-gradient-to-b from-red-900 via-slate-950 to-blue-950 border-red-500";
+                    customIconHtml = `<div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center border-2 border-red-400 text-xl shadow-lg shadow-red-500/30">🏛️</div>`;
+                } else if (spec.theme === "ronaldo") {
+                    themeBgClass = "bg-gradient-to-b from-blue-900 via-slate-950 to-cyan-950 border-cyan-400";
+                    customIconHtml = `<div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center border-2 border-cyan-300 text-xl shadow-lg shadow-cyan-500/30">⚽</div>`;
+                } else if (spec.theme === "evos") {
+                    themeBgClass = "bg-gradient-to-b from-blue-700 via-slate-950 to-purple-950 border-cyan-300";
+                    customIconHtml = `<div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center border-2 border-cyan-300 text-xl shadow-lg shadow-cyan-500/30">⚡</div>`;
+                } else if (spec.theme === "spotify") {
+                    themeBgClass = "bg-gradient-to-b from-emerald-900 via-slate-950 to-black border-emerald-400";
+                    customIconHtml = `
+                        <div class="flex items-end justify-center space-x-1.5 h-8 py-1">
+                            <div class="w-1.5 bg-emerald-400 rounded-full bar-wave"></div>
+                            <div class="w-1.5 bg-emerald-400 rounded-full bar-wave"></div>
+                            <div class="w-1.5 bg-emerald-400 rounded-full bar-wave"></div>
+                            <div class="w-1.5 bg-emerald-400 rounded-full bar-wave"></div>
+                        </div>
+                    `;
+                } else if (spec.theme === "cireng") {
+                    themeBgClass = "bg-gradient-to-b from-orange-800 via-slate-950 to-purple-950 border-orange-500";
+                    customIconHtml = `
+                        <div class="relative w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center border-2 border-orange-400 text-xl">
+                            <span class="steam-effect absolute -top-2">♨️</span>
+                            🥟
+                        </div>
+                    `;
+                }
+
+                backCard.className = `backface-hidden rotate-y-180 absolute inset-0 w-full h-full ${themeBgClass} flex flex-col justify-between p-4 md:p-5 rounded-2xl border-2 shadow-2xl`;
+                backContainer.innerHTML = `
+                    ${customIconHtml}
+                    <span class="text-xs font-black text-cyan-300 uppercase tracking-widest">PERAN: ${spec.title}</span>
+                    <div class="space-y-0.5">
+                        <span class="text-[9px] text-gray-300 uppercase block tracking-wider font-semibold">Kata Rahasia</span>
+                        <h3 class="text-2xl font-black text-white tracking-wide uppercase">${spec.word}</h3>
+                    </div>
+                    <div class="w-full pt-1">
+                        <span class="text-[9px] text-cyan-300 font-bold uppercase tracking-wider block mb-0.5">💡 Clue Kata:</span>
+                        <p class="text-[10px] text-cyan-200/95 italic bg-black/60 p-2 rounded-xl border border-cyan-400/30 leading-relaxed">
+                            "${player.clue}"
+                        </p>
+                    </div>
+                `;
+            } else {
+                backTag.innerText = "INFORMASI DEKSTRUKTIF";
+                backTag.className = "text-[9px] font-bold text-orange-400/50 tracking-widest";
+                backCard.className = "backface-hidden rotate-y-180 absolute inset-0 w-full h-full bg-slate-950 flex flex-col justify-between p-4 md:p-5 rounded-2xl border-2 border-teal-500/40 shadow-xl";
+
+                backContainer.innerHTML = `
+                    <div class="w-11 h-11 rounded-full bg-teal-500/20 flex items-center justify-center border border-teal-500/30">
+                        <i class="fa-solid fa-user-shield text-xl text-teal-300"></i>
+                    </div>
+                    <span class="text-xs font-black text-teal-300 uppercase tracking-widest">Peran: Warga Sipil</span>
+                    <div class="space-y-0.5">
+                        <span class="text-[9px] text-gray-400 uppercase block tracking-wider font-semibold">Kata Anda</span>
+                        <h3 class="text-2xl font-black text-white tracking-wide uppercase">${player.word}</h3>
+                    </div>
+                    <div class="w-full pt-1">
+                        <span class="text-[9px] text-cyan-300 font-bold uppercase tracking-wider block mb-0.5">💡 Clue Kata:</span>
+                        <p class="text-[10px] text-cyan-200/95 italic bg-slate-900/90 p-2 rounded-xl border border-cyan-500/20 leading-relaxed">
+                            "${player.clue}"
+                        </p>
+                    </div>
+                `;
+            }
+
+            cardInner.classList.add("rotate-y-180");
+            gameState.distributeStage = 'reveal';
+            nextBtn.classList.remove("hidden");
+        }
+
+        function nextCardDistribution() {
+            if (gameState.distributeStage !== 'reveal' || isProcessingDistributionStep) return;
+            
+            isProcessingDistributionStep = true;
+            playSound('click');
+
+            const cardInner = document.getElementById("flip-card-inner");
+            cardInner.classList.remove("rotate-y-180");
+            
+            setTimeout(() => {
+                if (gameState.activePlayerIndex < gameState.players.length - 1) {
+                    gameState.activePlayerIndex++;
+                    setupDistributionUI();
+                } else {
+                    showDiceRollPanel();
+                }
+            }, 300);
+        }
+
+        function showDiceRollPanel() {
+            hideAllPanels();
+            document.getElementById("panel-dice-roll").classList.remove("hidden");
+            document.getElementById("dice-result-container").classList.add("hidden");
+            document.getElementById("btn-dice-continue").classList.add("hidden");
+            
+            const rollBtn = document.getElementById("btn-roll-dice");
+            rollBtn.classList.remove("hidden");
+            rollBtn.removeAttribute("disabled");
+            rollBtn.className = "w-full max-w-[280px] mx-auto py-3 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-black rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20 border border-cyan-400/30";
+            
+            document.getElementById("dice-visual").innerText = "🎲";
+            document.getElementById("dice-visual").className = "w-24 h-24 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center text-white text-5xl font-black transition-transform duration-100 border-2 border-cyan-300";
+        }
+
+        function rollTurnDice() {
+            playSound('card');
+            const diceEl = document.getElementById("dice-visual");
+            const rollBtn = document.getElementById("btn-roll-dice");
+            
+            rollBtn.setAttribute("disabled", "true");
+            rollBtn.className = "w-full max-w-[280px] mx-auto py-3 bg-slate-850 text-gray-500 font-bold rounded-xl text-sm cursor-not-allowed border border-blue-900/50";
+
+            let counter = 0;
+            const diceFaces = ["⚄", "⚁", "⚂", "⚃", "⚀", "⚅"];
+            
+            const interval = setInterval(() => {
+                diceEl.innerText = diceFaces[Math.floor(getSecureRandom() * diceFaces.length)];
+                
+                const angle = (getSecureRandom() * 20 - 10);
+                diceEl.style.transform = `rotate(${angle}deg) scale(1.1)`;
+                counter++;
+                
+                if (counter > 15) {
+                    clearInterval(interval);
+                    
+                    const alivePlayers = gameState.players.filter(p => p.isAlive);
+                    const chosenPlayer = alivePlayers[Math.floor(getSecureRandom() * alivePlayers.length)];
+                    gameState.starterPlayerId = chosenPlayer.id;
+
+                    diceEl.innerText = "⚅";
+                    diceEl.style.transform = "rotate(0deg) scale(1)";
+                    diceEl.className = "w-24 h-24 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl shadow-2xl flex items-center justify-center text-slate-950 text-5xl font-black border-2 border-teal-300 animate-bounce";
+
+                    playSound('success');
+
+                    document.getElementById("dice-chosen-player-name").innerText = chosenPlayer.name;
+                    document.getElementById("dice-result-container").classList.remove("hidden");
+                    
+                    resetManualTurnDirectionUI();
+
+                    rollBtn.classList.add("hidden");
+                }
+            }, 80);
+        }
+
+        function resetManualTurnDirectionUI() {
+            const btnRight = document.getElementById("btn-select-dir-right");
+            const btnLeft = document.getElementById("btn-select-dir-left");
+            btnRight.className = "py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white";
+            btnLeft.className = "py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white";
+            document.getElementById("btn-dice-continue").classList.add("hidden");
+            gameState.turnDirection = null;
+        }
+
+        function setManualTurnDirection(dir) {
+            playSound('click');
+            gameState.turnDirection = dir;
+            
+            const btnRight = document.getElementById("btn-select-dir-right");
+            const btnLeft = document.getElementById("btn-select-dir-left");
+            
+            if (dir === 'right') {
+                btnRight.className = "py-2.5 text-xs font-black rounded-lg transition-all bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md";
+                btnLeft.className = "py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white";
+            } else {
+                btnRight.className = "py-2.5 text-xs font-black rounded-lg transition-all border border-blue-800/50 bg-slate-900 text-gray-300 hover:text-white";
+                btnLeft.className = "py-2.5 text-xs font-black rounded-lg transition-all bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md";
+            }
+
+            document.getElementById("btn-dice-continue").classList.remove("hidden");
+        }
+
+        function continueToGameplay() {
+            if (!gameState.turnDirection) {
+                setManualTurnDirection('right');
+            }
+            gameState.currentStage = 1;
+            initStageGameplay(gameState.starterPlayerId);
+        }
+
+        function initStageGameplay(starterPlayerId) {
+            hideAllPanels();
+            document.getElementById("panel-gameplay").classList.remove("hidden");
+            
+            updateStageStepperUI();
+
+            const alivePlayers = gameState.players.filter(p => p.isAlive);
+
+            if (starterPlayerId) {
+                const startIndex = alivePlayers.findIndex(p => p.id === starterPlayerId);
+                if (startIndex !== -1) {
+                    const n = alivePlayers.length;
+                    const order = [];
+                    for (let i = 0; i < n; i++) {
+                        let targetIndex;
+                        if (gameState.turnDirection === 'right') {
+                            targetIndex = (startIndex + i) % n;
+                        } else {
+                            targetIndex = (startIndex - i + n) % n;
+                        }
+                        order.push(alivePlayers[targetIndex]);
+                    }
+                    gameState.speakingOrder = order;
+                }
+            } else if (!gameState.speakingOrder || gameState.speakingOrder.length === 0) {
+                gameState.speakingOrder = [...alivePlayers];
+            }
+
+            const dirText = gameState.turnDirection === 'right' ? 'melingkar ke kanan' : 'melingkar ke kiri';
+            document.getElementById("gameplay-direction-subtitle").innerText = `Putaran berjalan ${dirText}.`;
+
+            const rarityBadge = document.getElementById("gameplay-rarity-badge");
+            rarityBadge.innerText = "Sistem Stage";
+
+            gameState.playersSpokenThisStage = [];
+            gameState.currentSpeakingIndex = 0;
+            
+            updateSpeakingTurnUI();
+            updateActivePlayerDisplay();
+        }
+
+        function updateStageStepperUI() {
+            document.getElementById("current-stage-title").innerText = `Putaran: Stage ${gameState.currentStage} / 3`;
+            
+            const stepLine = document.getElementById("step-line-fill");
+            const c1 = document.getElementById("step-1-circle");
+            const c2 = document.getElementById("step-2-circle");
+            const c3 = document.getElementById("step-3-circle");
+
+            if (gameState.currentStage === 1) {
+                stepLine.style.width = "0%";
+                c1.className = "w-8 h-8 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-black text-xs border border-cyan-300 shadow-md transition-all";
+                c2.className = "w-8 h-8 rounded-full bg-slate-900 text-gray-500 flex items-center justify-center font-bold text-xs border border-blue-900 transition-all";
+                c3.className = "w-8 h-8 rounded-full bg-slate-900 text-gray-500 flex items-center justify-center font-bold text-xs border border-blue-900 transition-all";
+            } else if (gameState.currentStage === 2) {
+                stepLine.style.width = "50%";
+                c1.className = "w-8 h-8 rounded-full bg-blue-950 text-cyan-300 flex items-center justify-center font-bold text-xs border border-blue-800 transition-all";
+                c2.className = "w-8 h-8 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-black text-xs border border-cyan-300 shadow-md transition-all";
+                c3.className = "w-8 h-8 rounded-full bg-slate-900 text-gray-500 flex items-center justify-center font-bold text-xs border border-blue-900 transition-all";
+            } else if (gameState.currentStage === 3) {
+                stepLine.style.width = "100%";
+                c1.className = "w-8 h-8 rounded-full bg-blue-950 text-cyan-300 flex items-center justify-center font-bold text-xs border border-blue-800 transition-all";
+                c2.className = "w-8 h-8 rounded-full bg-blue-950 text-cyan-300 flex items-center justify-center font-bold text-xs border border-blue-800 transition-all";
+                c3.className = "w-8 h-8 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-black text-xs border border-cyan-300 shadow-md transition-all";
+            }
+        }
+
+        function updateSpeakingTurnUI() {
+            const alivePlayers = gameState.speakingOrder;
+            const activeSpeaker = alivePlayers[gameState.currentSpeakingIndex];
+
+            document.getElementById("current-speaking-player-name").innerText = activeSpeaker.name;
+
+            const trackerContainer = document.getElementById("stage-players-list-tracker");
+            trackerContainer.innerHTML = "";
+
+            alivePlayers.forEach((p, idx) => {
+                const isDone = gameState.playersSpokenThisStage.includes(p.id);
+                const isCurrent = idx === gameState.currentSpeakingIndex;
+
+                const item = document.createElement("div");
+                item.className = `flex justify-between items-center p-2 rounded-xl text-xs border ${
+                    isCurrent 
+                        ? 'bg-cyan-500/10 border-cyan-400/40 text-white font-bold' 
+                        : isDone 
+                            ? 'bg-slate-950/40 border-slate-900/60 text-gray-500' 
+                            : 'bg-slate-950 border-blue-900/50 text-gray-300'
+                }`;
+
+                let statusBadge = "";
+                if (isCurrent) {
+                    statusBadge = `<span class="text-cyan-300 font-extrabold animate-pulse"><i class="fa-solid fa-microphone mr-1"></i>Bicara</span>`;
+                } else if (isDone) {
+                    statusBadge = `<span class="text-teal-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Selesai</span>`;
+                } else {
+                    statusBadge = `<span class="text-gray-500">Menunggu</span>`;
+                }
+
+                item.innerHTML = `<span>${p.name}</span>${statusBadge}`;
+                trackerContainer.appendChild(item);
+            });
+
+            document.getElementById("stage-round-count").innerText = `${gameState.playersSpokenThisStage.length}/${alivePlayers.length} Terpenuhi`;
+
+            const dirTextHeader = gameState.turnDirection === 'right' ? 'Melingkar Kanan' : 'Melingkar Kiri';
+            document.getElementById("tracker-direction-header").innerText = `Urutan Meja (${dirTextHeader})`;
+
+            const forceVoteBtn = document.getElementById("btn-force-voting-trigger");
+            if (gameState.currentStage === 3 && gameState.playersSpokenThisStage.length === alivePlayers.length) {
+                forceVoteBtn.removeAttribute("disabled");
+                forceVoteBtn.innerHTML = `Mulai Sidang Voting <i class="fa-solid fa-lock-open text-cyan-300 ml-1"></i>`;
+                forceVoteBtn.className = "w-full py-3.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white rounded-xl text-xs font-black tracking-wider uppercase transition-all shadow-lg animate-bounce border border-cyan-400/30";
+            } else {
+                forceVoteBtn.setAttribute("disabled", "true");
+                forceVoteBtn.innerHTML = `Selesaikan 3 Stage Untuk Vote <i class="fa-solid fa-lock ml-1"></i>`;
+                forceVoteBtn.className = "w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-gray-400 border border-blue-900/50 rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed";
+            }
+        }
+
+        function advanceSpeakingTurn() {
+            playSound('click');
+            const alivePlayers = gameState.speakingOrder;
+            const activeSpeaker = alivePlayers[gameState.currentSpeakingIndex];
+
+            if (!gameState.playersSpokenThisStage.includes(activeSpeaker.id)) {
+                gameState.playersSpokenThisStage.push(activeSpeaker.id);
+            }
+
+            if (gameState.currentSpeakingIndex < alivePlayers.length - 1) {
+                gameState.currentSpeakingIndex++;
+                updateSpeakingTurnUI();
+            } else {
+                if (gameState.currentStage < 3) {
+                    gameState.currentStage++;
+                    playSound('success');
+                    
+                    const dirText = gameState.turnDirection === 'right' ? 'melingkar ke kanan' : 'melingkar ke kiri';
+                    showCustomDialog(
+                        `Mulai Stage ${gameState.currentStage}!`,
+                        `Semua pemain telah memberikan petunjuk secara ${dirText} di Stage sebelumnya. Sekarang giliran Anda memberikan kata petunjuk baru untuk memperjelas kecurigaan!`,
+                        "success",
+                        [
+                            { 
+                                text: `Mulai Stage ${gameState.currentStage}`, 
+                                onClick: () => {
+                                    closeCustomDialog();
+                                    initStageGameplay(gameState.starterPlayerId);
+                                }, 
+                                isPrimary: true 
+                            }
+                        ]
+                    );
+                } else {
+                    updateSpeakingTurnUI();
+                    playSound('success');
+                    showCustomDialog(
+                        "Sesi Diskusi Selesai!",
+                        "Seluruh pemain telah berdiskusi melewati 3 Stage petunjuk. Silakan tekan tombol 'Mulai Sidang Voting' untuk mendeportasi terduga Mata-mata!",
+                        "success"
+                    );
+                }
+            }
+        }
+
+        function updateActivePlayerDisplay() {
+            const aliveCount = gameState.players.filter(p => p.isAlive).length;
+            document.getElementById("active-players-count").innerText = `${aliveCount} / ${gameState.players.length} Pemain`;
+        }
+
+        function revealSecretWordsModal() {
+            playSound('click');
+            let options = [];
+            gameState.players.forEach((p) => {
+                if (p.isAlive) {
+                    options.push({
+                        text: p.name,
+                        onClick: () => {
+                            closeCustomDialog();
+                            
+                            let roleTitleText = p.role === 'spy' ? "MATA-MATA" : "WARGA SIPIL";
+                            let colorClass = p.role === 'spy' ? "block text-base font-black uppercase text-rose-400" : "block text-base font-black uppercase text-teal-300";
+                            let displayedWord = p.word;
+
+                            const clueSection = document.getElementById("revealed-clue-section");
+                            const clueTextBox = document.getElementById("revealed-clue-text-box");
+
+                            if (p.role === 'spy' && p.isRareSpy) {
+                                roleTitleText = "PENYUSUP GLITCH ⚠️ (RARE)";
+                                colorClass = "block text-base font-black uppercase text-purple-300 animate-pulse";
+                                displayedWord = getGlitchHint(gameState.civilianWord);
+                                clueSection.classList.add("hidden");
+                            } else if (p.role === 'spy') {
+                                clueSection.classList.add("hidden");
+                            } else {
+                                if (gameState.isSpecialMode) {
+                                    roleTitleText = `${gameState.specialCardObj.title}`;
+                                    colorClass = "block text-base font-black uppercase text-cyan-300";
+                                }
+                                clueSection.classList.remove("hidden");
+                                clueTextBox.innerText = `"${p.clue}"`;
+                            }
+
+                            document.getElementById("revealed-secret-word-display").innerText = displayedWord;
+                            document.getElementById("revealed-secret-role-display").innerText = roleTitleText;
+                            document.getElementById("revealed-secret-role-display").className = colorClass;
+
+                            document.getElementById("modal-reveal-secret").classList.remove("hidden");
+                        },
+                        isPrimary: true
+                    });
+                }
+            });
+            options.push({ text: "Batal", onClick: closeCustomDialog, isPrimary: false });
+
+            showCustomDialog("Pilih Nama Anda", "Pastikan tidak ada pemain lain yang mengintip layar handphone saat Anda membuka kata rahasia!", "info", options);
+        }
+
+        function closeRevealSecretModal() {
+            playSound('click');
+            document.getElementById("modal-reveal-secret").classList.add("hidden");
+        }
+
+        function triggerMultiVotingPhase() {
+            playSound('click');
+            hideAllPanels();
+            document.getElementById("panel-voting").classList.remove("hidden");
+            
+            gameState.votingTurnIndex = 0;
+            gameState.votesReceived = {};
+            
+            renderVotingGrid();
+        }
+
+        function renderVotingGrid() {
+            const alivePlayers = gameState.speakingOrder;
+            const currentVoter = alivePlayers[gameState.votingTurnIndex];
+
+            document.getElementById("voter-turn-badge").innerText = `GILIRAN MEMILIH: ${gameState.votingTurnIndex + 1} / ${alivePlayers.length}`;
+            document.getElementById("voting-prompt-title").innerText = `${currentVoter.name}, ${TRANSLATIONS[currentLang].votePrompt}`;
+
+            const grid = document.getElementById("voting-grid");
+            grid.innerHTML = "";
+
+            gameState.players.forEach(player => {
+                if (!player.isAlive) {
+                    const card = document.createElement("div");
+                    card.className = "bg-slate-950/40 border border-blue-900/30 p-4 rounded-2xl text-center opacity-40 relative overflow-hidden flex flex-col justify-center aspect-square items-center shadow-inner";
+                    card.innerHTML = `
+                        <div class="absolute inset-0 bg-red-950/20 flex items-center justify-center pointer-events-none">
+                            <span class="text-rose-400 font-black text-[10px] border-2 border-rose-500/50 py-1 px-2.5 rounded-lg transform -rotate-12 uppercase tracking-widest">TERELIMINASI</span>
+                        </div>
+                        <span class="text-xs text-gray-500 font-bold block">${player.name}</span>
+                    `;
+                    grid.appendChild(card);
+                } else if (player.id === currentVoter.id) {
+                    const card = document.createElement("div");
+                    card.className = "bg-slate-950/30 border border-blue-900/40 p-4 rounded-2xl text-center opacity-50 flex flex-col justify-center aspect-square items-center shadow-inner";
+                    card.innerHTML = `
+                        <i class="fa-solid fa-user-lock text-gray-500 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400 font-bold block">${player.name}</span>
+                        <span class="text-[9px] text-gray-500 uppercase mt-1 font-semibold">Diri Sendiri</span>
+                    `;
+                    grid.appendChild(card);
+                } else {
+                    const card = document.createElement("button");
+                    card.onclick = () => registerVote(player.id);
+                    card.className = "vote-card-3d cyber-card border-2 border-blue-800/50 hover:border-cyan-400 p-4 rounded-2xl text-center transition-all flex flex-col justify-between items-center aspect-square relative group overflow-hidden cursor-pointer";
+                    
+                    card.innerHTML = `
+                        <div class="w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-300 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-all shadow-md mt-1">
+                            <i class="fa-solid fa-user-secret text-base"></i>
+                        </div>
+                        
+                        <div class="my-auto space-y-0.5">
+                            <h4 class="text-sm font-extrabold text-white group-hover:text-cyan-300 transition-colors tracking-wide">${player.name}</h4>
+                            <span class="text-[9px] text-gray-400 uppercase font-semibold block">Terduga Impostor</span>
+                        </div>
+
+                        <div class="w-full">
+                            <span class="block w-full py-2 bg-slate-900 group-hover:bg-cyan-500 group-hover:text-slate-950 rounded-xl text-[10px] font-black text-gray-300 transition-all uppercase tracking-wider border border-blue-800/50 group-hover:border-cyan-300 shadow-md">
+                                Vote Suspect <i class="fa-solid fa-check ml-0.5"></i>
+                            </span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function registerVote(targetId) {
+            playSound('click');
+            const alivePlayers = gameState.speakingOrder;
+            const currentVoter = alivePlayers[gameState.votingTurnIndex];
+
+            gameState.votesReceived[currentVoter.id] = targetId;
+
+            if (gameState.votingTurnIndex < alivePlayers.length - 1) {
+                gameState.votingTurnIndex++;
+                renderVotingGrid();
+            } else {
+                tallyVotesAndEliminate();
+            }
+        }
+
+        function tallyVotesAndEliminate() {
+            const alivePlayers = gameState.speakingOrder;
+            const voteCounts = {};
+
+            gameState.players.forEach(p => {
+                if (p.isAlive) voteCounts[p.id] = 0;
+            });
+
+            for (const voterId in gameState.votesReceived) {
+                const targetId = gameState.votesReceived[voterId];
+                if (voteCounts[targetId] !== undefined) {
+                    voteCounts[targetId]++;
+                }
+            }
+
+            let highestVoteId = null;
+            let maxVotes = -1;
+            let ties = [];
+
+            for (const pId in voteCounts) {
+                if (voteCounts[pId] > maxVotes) {
+                    maxVotes = voteCounts[pId];
+                    highestVoteId = pId;
+                    ties = [pId];
+                } else if (voteCounts[pId] === maxVotes) {
+                    ties.push(pId);
+                }
+            }
+
+            if (ties.length > 1) {
+                highestVoteId = ties[Math.floor(getSecureRandom() * ties.length)];
+            }
+
+            const eliminatedPlayer = gameState.players.find(p => p.id === highestVoteId);
+
+            let resultSummary = "Berikut adalah hasil pilihan dari masing-masing pemain:\n\n";
+            alivePlayers.forEach(voter => {
+                const targetId = gameState.votesReceived[voter.id];
+                const targetPlayer = gameState.players.find(p => p.id === targetId);
+                resultSummary += `• **${voter.name}** memilih ➔ **${targetPlayer.name}**\n`;
+            });
+
+            resultSummary += `\n**Hasil Akhir:**\n**${eliminatedPlayer.name}** mendapatkan suara terbanyak (${maxVotes} suara)${ties.length > 1 ? ' (Hasil seri dipecahkan acak aman)' : ''} dan resmi dideportasi dari forum!`;
+
+            playSound('fail');
+
+            showCustomDialog(
+                "Laporan Sidang Deportasi",
+                resultSummary,
+                "fail",
+                [
+                    {
+                        text: "Lanjutkan",
+                        onClick: () => {
+                            closeCustomDialog();
+                            eliminatePlayer(eliminatedPlayer.id);
+                        },
+                        isPrimary: true
+                    }
+                ]
+            );
+        }
+
+        function eliminatePlayer(id) {
+            const player = gameState.players.find(p => p.id === id);
+            player.isAlive = false;
+
+            if (player.role === 'spy') {
+                showCustomDialog(
+                    "Mata-mata Tereliminasi!",
+                    `"${player.name}" terbukti adalah seorang Mata-mata!`,
+                    "success",
+                    [{ text: "Lanjutkan", onClick: () => { closeCustomDialog(); verifyDirectVictoryConditions(); }, isPrimary: true }]
+                );
+            } else {
+                showCustomDialog(
+                    "Warga Sipil Terbuang!",
+                    `"${player.name}" ternyata adalah Warga Sipil! Permainan dilanjutkan.`,
+                    "fail",
+                    [{ text: "Lanjutkan", onClick: () => { closeCustomDialog(); verifyDirectVictoryConditions(); }, isPrimary: true }]
+                );
+            }
+        }
+
+        function verifyDirectVictoryConditions() {
+            const alivePlayers = gameState.players.filter(p => p.isAlive);
+            const aliveCivilians = alivePlayers.filter(p => p.role === 'civilian');
+            const aliveSpies = alivePlayers.filter(p => p.role === 'spy');
+
+            if (aliveSpies.length === 0) {
+                endGame('civilian_win');
+            } else if (aliveSpies.length >= aliveCivilians.length) {
+                endGame('spy_win_ratio');
+            } else {
+                showCustomDialog(
+                    "Putaran Baru Dimulai!",
+                    "Sebelum memulai diskusi babak baru, kocok dadu kembali untuk menentukan pembicara pertama!",
+                    "info",
+                    [
+                        {
+                            text: "Kocok Dadu",
+                            onClick: () => {
+                                closeCustomDialog();
+                                gameState.speakingOrder = [];
+                                showDiceRollPanel();
+                            },
+                            isPrimary: true
+                        }
+                    ]
+                );
+            }
+        }
+
+        function cancelVotingAndReturn() {
+            playSound('click');
+            hideAllPanels();
+            document.getElementById("panel-gameplay").classList.remove("hidden");
+        }
+
+        function endGame(outcome) {
+            hideAllPanels();
+            document.getElementById("panel-gameover").classList.remove("hidden");
+            
+            const artIcon = document.getElementById("gameover-art-icon");
+            const title = document.getElementById("gameover-title");
+            const subtitle = document.getElementById("gameover-subtitle");
+
+            document.getElementById("gameover-word-civilian").innerText = gameState.civilianWord;
+
+            if (outcome === 'civilian_win') {
+                playVictoryMelody('civilian');
+                artIcon.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-teal-500/20 border-2 border-teal-400 text-teal-300 animate-bounce";
+                artIcon.innerHTML = `<i class="fa-solid fa-users-shield text-4xl"></i>`;
+                title.innerText = "Warga Sipil Menang!";
+                title.className = "text-3xl font-black tracking-tight text-teal-300";
+                subtitle.innerText = "Selamat! Kalian berhasil mendeportasi seluruh Mata-mata dari forum.";
+            } else {
+                playVictoryMelody('spy');
+                artIcon.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-rose-500/20 border-2 border-rose-500 text-rose-400";
+                artIcon.innerHTML = `<i class="fa-solid fa-user-secret text-4xl"></i>`;
+                title.innerText = "Mata-mata Menang!";
+                title.className = "text-3xl font-black tracking-tight text-rose-400";
+                subtitle.innerText = "Mata-mata berhasil mendominasi diskusi meja! Jumlah sisa warga sipil kini setara atau kalah jumlah.";
+            }
+
+            const listContainer = document.getElementById("gameover-players-list");
+            listContainer.innerHTML = "";
+
+            gameState.players.forEach(p => {
+                const div = document.createElement("div");
+                div.className = `flex justify-between items-center p-2.5 rounded-xl border text-xs ${p.isAlive ? 'bg-slate-900/80 border-blue-900/50' : 'bg-slate-950/40 border-blue-950/60 opacity-60'}`;
+                
+                let roleBadgeText = "Warga Sipil";
+                let roleBadgeClass = "bg-teal-500/20 text-teal-300 border border-teal-500/30";
+                let displayedWord = p.word;
+
+                if (p.role === 'spy') {
+                    roleBadgeText = "Mata-mata";
+                    roleBadgeClass = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+
+                    if (p.isRareSpy) {
+                        roleBadgeText = "Glitch Spy ⚠️";
+                        roleBadgeClass = "bg-purple-500/20 text-purple-300 border border-purple-500/40 font-black";
+                        displayedWord = getGlitchHint(gameState.civilianWord);
+                    }
+                } else if (p.role === 'civilian' && gameState.isSpecialMode) {
+                    roleBadgeText = `${gameState.specialCardObj.word} ⭐`;
+                    roleBadgeClass = "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 font-black";
+                }
+
+                const roleBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-bold ${roleBadgeClass} uppercase">${roleBadgeText}</span>`;
+                const statusBadge = p.isAlive 
+                    ? `<span class="text-teal-300 font-semibold"><i class="fa-solid fa-heart mr-1"></i>Selamat</span>` 
+                    : `<span class="text-rose-500 font-semibold line-through"><i class="fa-solid fa-skull-crossbones mr-1"></i>Terdeportasi</span>`;
+
+                div.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <span class="font-extrabold text-white text-sm">${p.name}</span>
+                        ${roleBadge}
+                    </div>
+                    <div class="flex items-center space-x-3 text-right">
+                        <span class="text-[10px] text-gray-400">"${displayedWord}"</span>
+                        ${statusBadge}
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function restartSameSettings() {
+            playSound('click');
+            setupAndStartDistribution();
+        }
+    </script>
+</body>
+</html>
